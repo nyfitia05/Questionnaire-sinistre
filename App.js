@@ -8,7 +8,7 @@
 // Le SDK est chargé en UMD via CDN → window.supabase est disponible
 // Remplacez SUPABASE_ANON par votre clé anon/public (Project Settings > API)
 const SUPABASE_URL  = 'https://hrolvvpkpshefljlfljb.supabase.co';
-const SUPABASE_ANON = 'sb_publishable_UaYph6bDTzVLEZ7fhwnE1A_-ymXPr0v';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhyb2x2dnBrcHNoZWZsamxmbGpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzAwMTgsImV4cCI6MjA4OTM0NjAxOH0.h2n0u7mdiHRLqp8PpshS__9OXprkqnbYq6vuCAR_TFg';
 
 // Accès correct au SDK UMD : window.supabase.createClient
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
