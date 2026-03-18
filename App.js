@@ -1,62 +1,76 @@
 /* ============================================
    SOS FUITE D'EAU — APP.JS
-   IndexedDB + Navigation + PDF (print natif)
+   Base de données : Supabase (PostgreSQL)
    ============================================ */
 'use strict';
 
-// ==================== INDEXEDDB ====================
-const DB_NAME    = 'SOSFuiteDB';
-const DB_VERSION = 1;
-const STORE      = 'rapports';
-let db;
+// ==================== SUPABASE CONFIG ====================
+// ⚠️  Remplacez ces deux valeurs par vos credentials Supabase
+//     Supabase > Project Settings > API
+const SUPABASE_URL    = 'VOTRE_SUPABASE_URL';   // ex: https://xxxx.supabase.co
+const SUPABASE_ANON   = 'VOTRE_ANON_KEY';        // clé publique anon/public
 
-function initDB() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = e => {
-      const d = e.target.result;
-      if (!d.objectStoreNames.contains(STORE))
-        d.createObjectStore(STORE, { keyPath: 'id', autoIncrement: true });
-    };
-    req.onsuccess = e => { db = e.target.result; resolve(); };
-    req.onerror   = () => reject(req.error);
-  });
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ==================== COUCHE BASE DE DONNÉES ====================
+// Toutes les fonctions retournent les mêmes structures qu'avant
+// pour ne rien casser dans le reste du code.
+
+async function dbAdd(formData) {
+  const { refRapport, type, createdAt, ...rest } = formData;
+  const { data, error } = await sb
+    .from('rapports')
+    .insert({
+      ref_rapport : refRapport,
+      type        : type,
+      created_at  : createdAt,
+      data        : rest          // tout le reste en JSONB
+    })
+    .select()
+    .single();
+  if (error) throw error;
+  return data.id;
 }
 
-function dbAdd(data) {
-  return new Promise((resolve, reject) => {
-    const tx  = db.transaction(STORE, 'readwrite');
-    const req = tx.objectStore(STORE).add(data);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror   = () => reject(req.error);
-  });
+async function dbGetAll() {
+  const { data, error } = await sb
+    .from('rapports')
+    .select('*')
+    .order('created_at', { ascending: true });
+  if (error) throw error;
+  return data.map(flattenRow);
 }
 
-function dbGetAll() {
-  return new Promise((resolve, reject) => {
-    const tx  = db.transaction(STORE, 'readonly');
-    const req = tx.objectStore(STORE).getAll();
-    req.onsuccess = () => resolve(req.result);
-    req.onerror   = () => reject(req.error);
-  });
+async function dbGet(id) {
+  const { data, error } = await sb
+    .from('rapports')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error) throw error;
+  return flattenRow(data);
 }
 
-function dbGet(id) {
-  return new Promise((resolve, reject) => {
-    const tx  = db.transaction(STORE, 'readonly');
-    const req = tx.objectStore(STORE).get(id);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror   = () => reject(req.error);
-  });
+async function dbDelete(id) {
+  const { error } = await sb
+    .from('rapports')
+    .delete()
+    .eq('id', id);
+  if (error) throw error;
 }
 
-function dbDelete(id) {
-  return new Promise((resolve, reject) => {
-    const tx  = db.transaction(STORE, 'readwrite');
-    const req = tx.objectStore(STORE).delete(id);
-    req.onsuccess = () => resolve();
-    req.onerror   = () => reject(req.error);
-  });
+// Reconstruit un objet plat depuis la ligne Supabase
+// (réunit les colonnes principales + le blob JSONB data)
+function flattenRow(row) {
+  if (!row) return null;
+  return {
+    id         : row.id,
+    refRapport : row.ref_rapport,
+    type       : row.type,
+    createdAt  : row.created_at,
+    ...row.data              // tous les champs du formulaire
+  };
 }
 
 // ==================== NAVIGATION ====================
@@ -109,7 +123,6 @@ function collectForm() {
   const form = document.getElementById('mainForm');
   const data = { type: currentType };
 
-  // Numéro OS
   data.refRapport = (document.getElementById('refRapport').value || '').trim();
 
   // Checkboxes → tableau des valeurs cochées, groupées par name
@@ -141,14 +154,20 @@ document.getElementById('saveReportBtn').addEventListener('click', async () => {
     showToast('Renseignez le numéro OS avant d\'enregistrer.', 'error');
     return;
   }
+  const btn = document.getElementById('saveReportBtn');
+  btn.disabled = true;
+  btn.textContent = 'Enregistrement…';
   try {
     await dbAdd(data);
-    showToast('Rapport enregistré !', 'success');
+    showToast('Rapport enregistré dans Supabase !', 'success');
     resetForm();
     renderDashboard();
   } catch(e) {
-    showToast('Erreur lors de l\'enregistrement.', 'error');
+    showToast('Erreur lors de l\'enregistrement : ' + (e.message || e), 'error');
     console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✦ Enregistrer le rapport';
   }
 });
 
@@ -158,35 +177,39 @@ document.getElementById('clearFormBtn').addEventListener('click', () => {
 
 // ==================== DASHBOARD ====================
 async function renderDashboard() {
-  const all = await dbGetAll();
-  document.getElementById('totalCount').textContent =
-    all.length + ' rapport' + (all.length > 1 ? 's' : '');
+  try {
+    const all = await dbGetAll();
+    document.getElementById('totalCount').textContent =
+      all.length + ' rapport' + (all.length > 1 ? 's' : '');
 
-  const counts = { interieur:0, piscine:0, toiture:0, exterieur:0 };
-  all.forEach(r => { if (counts[r.type] !== undefined) counts[r.type]++; });
-  Object.entries(counts).forEach(([k, v]) => {
-    const el = document.getElementById('stat-' + k);
-    if (el) el.textContent = v;
-  });
+    const counts = { interieur:0, piscine:0, toiture:0, exterieur:0 };
+    all.forEach(r => { if (counts[r.type] !== undefined) counts[r.type]++; });
+    Object.entries(counts).forEach(([k, v]) => {
+      const el = document.getElementById('stat-' + k);
+      if (el) el.textContent = v;
+    });
 
-  const recent = [...all].reverse().slice(0, 8);
-  const list   = document.getElementById('recentList');
+    const recent = [...all].reverse().slice(0, 8);
+    const list   = document.getElementById('recentList');
 
-  if (!recent.length) {
-    list.innerHTML = '<div class="empty-state">Aucun rapport.<br>Créez votre premier rapport ✦</div>';
-    return;
-  }
+    if (!recent.length) {
+      list.innerHTML = '<div class="empty-state">Aucun rapport.<br>Créez votre premier rapport ✦</div>';
+      return;
+    }
 
-  list.innerHTML = recent.map(r => `
-    <div class="recent-item">
-      <span class="recent-type-badge ${r.type}">${typeLabel(r.type)}</span>
-      <div class="recent-info">
-        <div class="recent-ref">OS n° ${r.refRapport || '—'}</div>
-        <div class="recent-addr">${r.personne || r.e_personne || '—'}</div>
+    list.innerHTML = recent.map(r => `
+      <div class="recent-item">
+        <span class="recent-type-badge ${r.type}">${typeLabel(r.type)}</span>
+        <div class="recent-info">
+          <div class="recent-ref">OS n° ${r.refRapport || '—'}</div>
+          <div class="recent-addr">${r.personne || r.p_personne || r.e_personne || '—'}</div>
+        </div>
+        <div class="recent-date">${formatDatetime(r.createdAt)}</div>
       </div>
-      <div class="recent-date">${formatDatetime(r.createdAt)}</div>
-    </div>
-  `).join('');
+    `).join('');
+  } catch(e) {
+    console.error('Erreur dashboard:', e);
+  }
 }
 
 // ==================== TABLE ====================
@@ -203,77 +226,89 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 document.getElementById('searchInput').addEventListener('input', () => renderTable(currentFilter));
 
 async function renderTable(filter) {
-  const all = await dbGetAll();
-  const q   = document.getElementById('searchInput').value.toLowerCase();
+  try {
+    const all = await dbGetAll();
+    const q   = document.getElementById('searchInput').value.toLowerCase();
 
-  const rows = all.filter(r => {
-    if (filter !== 'all' && r.type !== filter) return false;
-    if (q) {
-      const hay = [r.refRapport, r.type, r.personne, r.e_personne, r.telephone, r.e_telephone].join(' ').toLowerCase();
-      return hay.includes(q);
+    const rows = all.filter(r => {
+      if (filter !== 'all' && r.type !== filter) return false;
+      if (q) {
+        const hay = [r.refRapport, r.type, r.personne, r.p_personne, r.e_personne,
+                     r.telephone, r.p_telephone, r.e_telephone].join(' ').toLowerCase();
+        return hay.includes(q);
+      }
+      return true;
+    }).reverse();
+
+    const tbody = document.getElementById('reportsTableBody');
+    const empty = document.getElementById('listEmpty');
+
+    if (!rows.length) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
     }
-    return true;
-  }).reverse();
+    empty.style.display = 'none';
 
-  const tbody = document.getElementById('reportsTableBody');
-  const empty = document.getElementById('listEmpty');
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td><strong>OS ${r.refRapport || '—'}</strong></td>
+        <td><span class="type-pill ${r.type}">${typeLabel(r.type)}</span></td>
+        <td>${r.personne || r.p_personne || r.e_personne || '—'}</td>
+        <td>${r.telephone || r.p_telephone || r.e_telephone || '—'}</td>
+        <td>${formatDatetime(r.createdAt)}</td>
+        <td>
+          <div class="table-actions">
+            <button class="action-btn pdf-btn" data-id="${r.id}">⬇ PDF</button>
+            <button class="action-btn del"     data-id="${r.id}">✕</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
 
-  if (!rows.length) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
+    tbody.querySelectorAll('.pdf-btn').forEach(btn =>
+      btn.addEventListener('click', () => generatePDF(btn.dataset.id))
+    );
 
-  tbody.innerHTML = rows.map(r => `
-    <tr>
-      <td><strong>OS ${r.refRapport || '—'}</strong></td>
-      <td><span class="type-pill ${r.type}">${typeLabel(r.type)}</span></td>
-      <td>${r.personne || r.e_personne || '—'}</td>
-      <td>${r.telephone || r.e_telephone || '—'}</td>
-      <td>${formatDatetime(r.createdAt)}</td>
-      <td>
-        <div class="table-actions">
-          <button class="action-btn pdf-btn" data-id="${r.id}">⬇ PDF</button>
-          <button class="action-btn del"     data-id="${r.id}">✕</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
-
-  tbody.querySelectorAll('.pdf-btn').forEach(btn =>
-    btn.addEventListener('click', () => generatePDF(+btn.dataset.id))
-  );
-
-  tbody.querySelectorAll('.del').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = +btn.dataset.id;
-      document.getElementById('modalOverlay').classList.add('open');
-      document.getElementById('confirmDelete').onclick = async () => {
-        await dbDelete(id);
-        document.getElementById('modalOverlay').classList.remove('open');
-        showToast('Rapport supprimé.', 'success');
-        renderTable(currentFilter);
-        renderDashboard();
-      };
+    tbody.querySelectorAll('.del').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        document.getElementById('modalOverlay').classList.add('open');
+        document.getElementById('confirmDelete').onclick = async () => {
+          try {
+            await dbDelete(id);
+            document.getElementById('modalOverlay').classList.remove('open');
+            showToast('Rapport supprimé.', 'success');
+            renderTable(currentFilter);
+            renderDashboard();
+          } catch(e) {
+            showToast('Erreur suppression : ' + (e.message || e), 'error');
+          }
+        };
+      });
     });
-  });
+  } catch(e) {
+    console.error('Erreur table:', e);
+  }
 }
 
 document.getElementById('cancelDelete').addEventListener('click', () =>
   document.getElementById('modalOverlay').classList.remove('open')
 );
 
-// ==================== PDF (impression HTML natif) ====================
+// ==================== PDF ====================
 async function generatePDF(id) {
-  const r = await dbGet(id);
-  if (!r) { showToast('Rapport introuvable.', 'error'); return; }
-  printReportHTML(r);
+  try {
+    const r = await dbGet(id);
+    if (!r) { showToast('Rapport introuvable.', 'error'); return; }
+    printReportHTML(r);
+  } catch(e) {
+    showToast('Erreur PDF : ' + (e.message || e), 'error');
+  }
 }
 
 function printReportHTML(r) {
 
-  /* Construction des sections */
   function sec(titre, lignes) {
     const rows = lignes
       .filter(([, val]) => val && val !== '' && !(Array.isArray(val) && !val.length))
@@ -358,29 +393,29 @@ function printReportHTML(r) {
       ['Bâche / volet',   r.qte_bache],
     ]);
     corps += sec('4. Local technique', [
-      ['Local présent',           r.local_technique],
-      ['Contient',                r.local_contient],
-      ['Autre équipement',        r.local_autre_equip],
-      ["Traces d'humidité",       r.p_humidite_local],
+      ['Local présent',        r.local_technique],
+      ['Contient',             r.local_contient],
+      ['Autre équipement',     r.local_autre_equip],
+      ["Traces d'humidité",    r.p_humidite_local],
     ]);
     corps += sec('5. Analyse technique par zone', [
-      ['Skimmers — Défaut visible',          r.p_defaut_skimmer],
-      ['Précision skimmers',                 r.p_defaut_skimmer_detail],
+      ['Skimmers — Défaut visible',             r.p_defaut_skimmer],
+      ['Précision skimmers',                    r.p_defaut_skimmer_detail],
       ['Refoulements — Micro-bulles/anomalies', r.p_microbulles],
-      ['Bonde(s) de fond — En cause',        r.p_bonde_cause],
-      ['Prise balai — Perte pompe en marche', r.p_prise_balai_perte],
-      ['Canalisations enterrées',            r.p_cana_enterrees],
-      ['Plan de passage connu',              r.p_plan_connu],
-      ['Document / photo disponible',        r.p_plan_detail],
+      ['Bonde(s) de fond — En cause',           r.p_bonde_cause],
+      ['Prise balai — Perte pompe en marche',   r.p_prise_balai_perte],
+      ['Canalisations enterrées',               r.p_cana_enterrees],
+      ['Plan de passage connu',                 r.p_plan_connu],
+      ['Document / photo disponible',           r.p_plan_detail],
     ]);
     corps += sec('6. Personnes & Accès', [
-      ['Personne présente',   r.p_personne],
-      ['Téléphone',           r.p_telephone],
-      ['Interlocuteur',       r.p_interlocuteur],
-      ['Coordonnées diff.',   r.p_coordonnees_diff],
+      ['Personne présente',     r.p_personne],
+      ['Téléphone',             r.p_telephone],
+      ['Interlocuteur',         r.p_interlocuteur],
+      ['Coordonnées diff.',     r.p_coordonnees_diff],
       ['Accès piscine / local', r.p_acces],
-      ['Stationnement',       r.p_stationnement],
-      ['Contraintes',         r.p_contraintes],
+      ['Stationnement',         r.p_stationnement],
+      ['Contraintes',           r.p_contraintes],
     ]);
   }
 
@@ -425,7 +460,7 @@ function printReportHTML(r) {
       ['Localisation vannes', r.vannes_loc],
     ]);
     corps += sec('5. Éléments complémentaires', [
-      ['Photos disponibles', r.photos],
+      ['Photos disponibles',  r.photos],
       ['Observations client', r.e_observations_client],
     ]);
     corps += sec('6. Personnes & Accès', [
@@ -438,11 +473,9 @@ function printReportHTML(r) {
     ]);
   }
 
-  /* ---- Couleur par type ---- */
-  const COLORS = { interieur:'#4f8ef7', piscine:'#3ecf8e', toiture:'#f7a24f', exterieur:'#5cb85c' };
-  const C = COLORS[r.type] || '#4f8ef7';
+  const C = '#2a3963';
+  const A = '#b0ca60';
 
-  /* ---- HTML final ---- */
   const html = `<!DOCTYPE html>
 <html lang="fr"><head>
 <meta charset="UTF-8"/>
@@ -450,38 +483,38 @@ function printReportHTML(r) {
 <style>
   @page { size:A4; margin:14mm 13mm 18mm; }
   *{ box-sizing:border-box; margin:0; padding:0; }
-  body{ font-family:Arial,sans-serif; font-size:9.5pt; color:#1a1e2e; background:#fff; }
+  body{ font-family:'Lato',Arial,sans-serif; font-size:9.5pt; color:#1a1e2e; background:#fff; }
 
   .header{
-    border-left: 5px solid ${C};
+    border-left: 5px solid ${A};
     padding: 10px 14px;
     margin-bottom: 18px;
-    background: #f7f8fc;
+    background: #f4f6fa;
   }
-  .header .os-number{
-    font-size: 20pt; font-weight: 900; color: #1a1e2e; line-height: 1.1;
-  }
-  .header .os-number span{ color: ${C}; }
-  .header .type-line{
-    margin-top: 5px; display: flex; align-items: center; gap: 10px;
-  }
+  .header .os-number{ font-size:20pt; font-weight:900; color:${C}; line-height:1.1; }
+  .header .os-number span{ color:${A}; }
+  .header .type-line{ margin-top:5px; }
   .badge{
     display:inline-block; background:${C}; color:#fff; font-weight:700;
-    font-size:9pt; text-transform:uppercase; letter-spacing:.06em;
+    font-size:8.5pt; text-transform:uppercase; letter-spacing:.06em;
     padding:3px 12px; border-radius:4px;
   }
-  .header .meta{ font-size:7.5pt; color:#888; margin-top:4px; }
+  .header .meta{ font-size:7.5pt; color:#888; margin-top:5px; }
 
   .sec{ margin-bottom:9px; page-break-inside:avoid; }
-  .sec-title{ background:#1c2235; color:${C}; font-weight:700; font-size:8pt;
-              text-transform:uppercase; letter-spacing:.07em; padding:4px 8px; }
+  .sec-title{
+    background:${C}; color:${A}; font-weight:700; font-size:7.5pt;
+    text-transform:uppercase; letter-spacing:.08em; padding:4px 8px;
+  }
   table{ width:100%; border-collapse:collapse; font-size:9pt; }
-  tr:nth-child(even) td{ background:#f7f8fc; }
-  td{ padding:3.5px 8px; border-bottom:1px solid #eaecf4; vertical-align:top; }
+  tr:nth-child(even) td{ background:#f4f6fa; }
+  td{ padding:3.5px 8px; border-bottom:1px solid #e8ecf4; vertical-align:top; }
   td.lbl{ width:42%; font-weight:700; color:#555; }
 
-  .footer{ position:fixed; bottom:0; left:0; right:0; text-align:center;
-           font-size:7pt; color:#bbb; border-top:1px solid #e8e8e8; padding-top:4px; }
+  .footer{
+    position:fixed; bottom:0; left:0; right:0; text-align:center;
+    font-size:7pt; color:#bbb; border-top:1px solid #e8ecf4; padding-top:4px;
+  }
   .footer b{ color:${C}; }
 
   @media print{
@@ -492,9 +525,7 @@ function printReportHTML(r) {
 
 <div class="header">
   <div class="os-number">OS n° <span>${r.refRapport || '—'}</span></div>
-  <div class="type-line">
-    <span class="badge">${typeLabel(r.type)}</span>
-  </div>
+  <div class="type-line"><span class="badge">${typeLabel(r.type)}</span></div>
   <div class="meta">Créé le ${formatDatetime(r.createdAt)} &nbsp;·&nbsp; SOS Fuite d'Eau</div>
 </div>
 
@@ -538,6 +569,10 @@ function showToast(msg, type='') {
 
 // ==================== INIT ====================
 (async () => {
-  await initDB();
+  // Vérification que les credentials sont configurés
+  if (SUPABASE_URL === 'VOTRE_SUPABASE_URL' || SUPABASE_ANON === 'VOTRE_ANON_KEY') {
+    showToast('⚠️ Configurez vos credentials Supabase dans app.js', 'error');
+    console.warn('Supabase non configuré — voir les constantes SUPABASE_URL et SUPABASE_ANON en haut de app.js');
+  }
   renderDashboard();
 })();
