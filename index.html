@@ -41,21 +41,21 @@
   <section class="view active" id="view-dashboard">
     <div class="dashboard-grid">
       <div class="stat-card" data-type="interieur">
-        <div class="stat-icon">🏠</div>
+        <div class="stat-icon"></div>
         <div class="stat-info">
           <div class="stat-number" id="stat-interieur">0</div>
           <div class="stat-label">Dégâts intérieurs</div>
         </div>
       </div>
       <div class="stat-card" data-type="piscine">
-        <div class="stat-icon">🏊</div>
+        <div class="stat-icon"></div>
         <div class="stat-info">
           <div class="stat-number" id="stat-piscine">0</div>
           <div class="stat-label">Piscines</div>
         </div>
       </div>
       <div class="stat-card" data-type="toiture">
-        <div class="stat-icon">🏗️</div>
+        <div class="stat-icon"></div>
         <div class="stat-info">
           <div class="stat-number" id="stat-toiture">0</div>
           <div class="stat-label">Toitures</div>
@@ -85,10 +85,10 @@
       <div class="type-selector">
         <h2 class="section-title">Type d'intervention</h2>
         <div class="type-grid">
-          <button class="type-btn active" data-type="interieur">🏠 Intérieur</button>
-          <button class="type-btn" data-type="piscine">🏊 Piscine</button>
-          <button class="type-btn" data-type="toiture">🏗️ Toiture</button>
-          <button class="type-btn" data-type="exterieur">🌿 Extérieur</button>
+          <button class="type-btn active" data-type="interieur">Intérieur</button>
+          <button class="type-btn" data-type="piscine">Piscine</button>
+          <button class="type-btn" data-type="toiture">Toiture</button>
+          <button class="type-btn" data-type="exterieur">Extérieur</button>
         </div>
       </div>
 
@@ -97,7 +97,7 @@
 
         <!-- Numéro OS -->
         <div class="form-card">
-          <div class="form-card-header">📋 Informations générales</div>
+          <div class="form-card-header">Informations générales</div>
           <div class="form-card-body">
             <div class="field-group">
               <label>Numéro OS</label>
@@ -770,10 +770,10 @@
       <input type="text" id="searchInput" placeholder="Rechercher un rapport…" class="search-input"/>
       <div class="filter-btns">
         <button class="filter-btn active" data-filter="all">Tous</button>
-        <button class="filter-btn" data-filter="interieur">🏠 Intérieur</button>
-        <button class="filter-btn" data-filter="piscine">🏊 Piscine</button>
-        <button class="filter-btn" data-filter="toiture">🏗️ Toiture</button>
-        <button class="filter-btn" data-filter="exterieur">🌿 Extérieur</button>
+        <button class="filter-btn" data-filter="interieur">Intérieur</button>
+        <button class="filter-btn" data-filter="piscine">Piscine</button>
+        <button class="filter-btn" data-filter="toiture">Toiture</button>
+        <button class="filter-btn" data-filter="exterieur">Extérieur</button>
       </div>
     </div>
     <div class="reports-table-wrap">
@@ -823,7 +823,7 @@
 // Le SDK est chargé en UMD via CDN → window.supabase est disponible
 // Remplacez SUPABASE_ANON par votre clé anon/public (Project Settings > API)
 const SUPABASE_URL  = 'https://hrolvvpkpshefljlfljb.supabase.co';
-const SUPABASE_ANON = 'VOTRE_CLE_ANON_ICI';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhyb2x2dnBrcHNoZWZsamxmbGpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzAwMTgsImV4cCI6MjA4OTM0NjAxOH0.h2n0u7mdiHRLqp8PpshS__9OXprkqnbYq6vuCAR_TFg';
 // ⚠️  Remplacez VOTRE_CLE_ANON_ICI par votre clé anon Supabase
 // Supabase > Project Settings > API > anon public
 
