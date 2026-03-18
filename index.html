@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SOS Fuite d'Eau — Rapports d'Intervention</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
 </head>
 <body>
 
 <!-- ===== SIDEBAR ===== -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
+    <span class="logo-icon">⬡</span>
     <span class="logo-text">SOS Fuite d'Eau</span>
   </div>
   <ul class="nav-links">
@@ -40,28 +40,28 @@
   <section class="view active" id="view-dashboard">
     <div class="dashboard-grid">
       <div class="stat-card" data-type="interieur">
-        <div class="stat-icon"></div>
+        <div class="stat-icon">🏠</div>
         <div class="stat-info">
           <div class="stat-number" id="stat-interieur">0</div>
           <div class="stat-label">Dégâts intérieurs</div>
         </div>
       </div>
       <div class="stat-card" data-type="piscine">
-        <div class="stat-icon"></div>
+        <div class="stat-icon">🏊</div>
         <div class="stat-info">
           <div class="stat-number" id="stat-piscine">0</div>
           <div class="stat-label">Piscines</div>
         </div>
       </div>
       <div class="stat-card" data-type="toiture">
-        <div class="stat-icon"></div>
+        <div class="stat-icon">🏗️</div>
         <div class="stat-info">
           <div class="stat-number" id="stat-toiture">0</div>
           <div class="stat-label">Toitures</div>
         </div>
       </div>
       <div class="stat-card" data-type="exterieur">
-        <div class="stat-icon"></div>
+        <div class="stat-icon">🌿</div>
         <div class="stat-info">
           <div class="stat-number" id="stat-exterieur">0</div>
           <div class="stat-label">Fuites extérieures</div>
@@ -361,7 +361,7 @@
             <div class="form-card-header">1️⃣ Origine du problème / Perte d'eau</div>
             <div class="form-card-body">
               <div class="check-group">
-                <label class="check-label">Depuis quand :</label>
+                <label class="check-label">Depuis quand le niveau baisse-t-il :</label>
                 <div class="checks-row">
                   <label class="checkbox-item"><input type="checkbox" name="p_anciennete" value="moins24h"/> &lt;24h</label>
                   <label class="checkbox-item"><input type="checkbox" name="p_anciennete" value="2-7j"/> 2–7j</label>
@@ -383,7 +383,7 @@
                 </div>
               </div>
               <div class="check-group">
-                <label class="check-label">Niveau cesse sous skimmers :</label>
+                <label class="check-label">Le niveau cesse-t-il de descendre sous les skimmers :</label>
                 <div class="checks-row">
                   <label class="checkbox-item"><input type="checkbox" name="niveau_skimmer" value="oui"/> Oui</label>
                   <label class="checkbox-item"><input type="checkbox" name="niveau_skimmer" value="non"/> Non</label>
@@ -426,7 +426,7 @@
             <div class="form-card-body">
               <div class="equip-grid">
                 <label class="equip-item"><input type="checkbox" name="equip" value="skimmers"/> Skimmers <input type="number" name="qte_skimmers" class="qte-input" placeholder="Qté"/></label>
-                <label class="equip-item"><input type="checkbox" name="equip" value="refoulements"/> Refoulements <input type="number" name="qte_refoulements" class="qte-input" placeholder="Qté"/></label>
+                <label class="equip-item"><input type="checkbox" name="equip" value="refoulements"/> Refoulements (buses) <input type="number" name="qte_refoulements" class="qte-input" placeholder="Qté"/></label>
                 <label class="equip-item"><input type="checkbox" name="equip" value="prise_balai"/> Prise balai <input type="number" name="qte_prise_balai" class="qte-input" placeholder="Qté"/></label>
                 <label class="equip-item"><input type="checkbox" name="equip" value="bonde_fond"/> Bonde de fond <input type="number" name="qte_bonde" class="qte-input" placeholder="Qté"/></label>
                 <label class="equip-item"><input type="checkbox" name="equip" value="trop_plein"/> Trop-plein <input type="number" name="qte_trop_plein" class="qte-input" placeholder="Qté"/></label>
@@ -435,7 +435,7 @@
                 <label class="equip-item"><input type="checkbox" name="equip" value="surpresseur"/> Surpresseur</label>
                 <label class="equip-item"><input type="checkbox" name="equip" value="pompe"/> Pompe <input type="number" name="qte_pompe" class="qte-input" placeholder="Qté"/></label>
                 <label class="equip-item"><input type="checkbox" name="equip" value="filtre"/> Filtre <input type="number" name="qte_filtre" class="qte-input" placeholder="Qté"/></label>
-                <label class="equip-item"><input type="checkbox" name="equip" value="bache"/> Bâche / volet <input type="number" name="qte_bache" class="qte-input" placeholder="Qté"/></label>
+                <label class="equip-item"><input type="checkbox" name="equip" value="bache"/> Bâche / volet roulant <input type="number" name="qte_bache" class="qte-input" placeholder="Qté"/></label>
               </div>
               <div class="check-group" style="margin-top:12px">
                 <label class="check-label">Type de filtre :</label>
@@ -460,17 +460,145 @@
                 </div>
               </div>
               <div class="check-group">
-                <label class="check-label">Contient :</label>
+                <label class="check-label">Le local technique contient :</label>
                 <div class="checks-row">
                   <label class="checkbox-item"><input type="checkbox" name="local_contient" value="filtre"/> Filtre</label>
                   <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pompe"/> Pompe</label>
                   <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pompe_balai"/> Pompe balai</label>
-                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pac"/> PAC</label>
+                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pac"/> Pompe à chaleur</label>
                   <label class="checkbox-item"><input type="checkbox" name="local_contient" value="electrolyseur"/> Électrolyseur</label>
                   <label class="checkbox-item"><input type="checkbox" name="local_contient" value="regulation_ph"/> Régulation pH</label>
                   <label class="checkbox-item"><input type="checkbox" name="local_contient" value="soupapes"/> Soupapes/vannes</label>
                   <label class="checkbox-item"><input type="checkbox" name="local_contient" value="collecteurs"/> Collecteurs</label>
                 </div>
+              </div>
+              <div class="field-group">
+                <label>Autre équipement</label>
+                <input type="text" name="local_autre_equip" placeholder="Préciser" />
+              </div>
+              <div class="check-group">
+                <label class="check-label">Traces d'humidité dans le local technique :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_humidite_local" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_humidite_local" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_humidite_local" value="intermittence"/> Par intermittence</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header">5️⃣ Analyse technique par zone</div>
+            <div class="form-card-body">
+              <div class="check-group">
+                <label class="check-label">Skimmers — Défaut visible constaté :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_defaut_skimmer" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_defaut_skimmer" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_defaut_skimmer" value="inconnu"/> Inconnu</label>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Précision skimmers</label>
+                <input type="text" name="p_defaut_skimmer_detail" placeholder="Détails…" />
+              </div>
+              <div class="check-group">
+                <label class="check-label">Refoulements — Micro-bulles ou anomalies aux buses :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_microbulles" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_microbulles" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_microbulles" value="intermittence"/> Par intermittence</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_microbulles" value="inconnu"/> Inconnu</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Bonde(s) de fond — Semblent-elles en cause :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_bonde_cause" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_bonde_cause" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_bonde_cause" value="inconnu"/> Inconnu</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Prise balai — Perte constatée pompe en marche :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_prise_balai_perte" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_prise_balai_perte" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_prise_balai_perte" value="intermittence"/> Par intermittence</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_prise_balai_perte" value="inconnu"/> Inconnu</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Tuyauteries — Canalisations enterrées :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_cana_enterrees" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_cana_enterrees" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_cana_enterrees" value="partiellement"/> Partiellement</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Plan ou schéma de passage connu :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_plan_connu" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_plan_connu" value="non"/> Non</label>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Document / photo disponible</label>
+                <input type="text" name="p_plan_detail" placeholder="Préciser si disponible" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header">6️⃣ Personnes &amp; Accès</div>
+            <div class="form-card-body">
+              <div class="field-row">
+                <div class="field-group">
+                  <label>Personne présente sur site</label>
+                  <input type="text" name="p_personne" />
+                </div>
+                <div class="field-group">
+                  <label>Téléphone</label>
+                  <input type="tel" name="p_telephone" />
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Interlocuteur :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_interlocuteur" value="proprietaire"/> Propriétaire</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_interlocuteur" value="gardien"/> Gardien</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_interlocuteur" value="syndic"/> Syndic</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_interlocuteur" value="conseil"/> Conseil syndical</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_interlocuteur" value="voisin"/> Voisin</label>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Coordonnées (si différent)</label>
+                <input type="text" name="p_coordonnees_diff" placeholder="Nom / tél / email" />
+              </div>
+              <div class="check-group">
+                <label class="check-label">Accès piscine / local technique :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_acces" value="portail"/> Portail</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_acces" value="cle"/> Clé</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_acces" value="badge"/> Badge</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_acces" value="interphone"/> Interphone</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_acces" value="gardien"/> Gardien</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_acces" value="libre"/> Libre accès</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Stationnement :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="p_stationnement" value="copropriete"/> Place copropriété</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_stationnement" value="100m"/> &lt;100m</label>
+                  <label class="checkbox-item"><input type="checkbox" name="p_stationnement" value="difficile"/> Difficile</label>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Contraintes particulières</label>
+                <textarea name="p_contraintes" rows="2" placeholder="Animaux, pente, végétation, horaires, couverture…"></textarea>
               </div>
             </div>
           </div>
@@ -810,6 +938,8 @@
   </div>
 </div>
 
-<script src="App.js"></script>
+<!-- SDK Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app.js"></script>
 </body>
 </html>
