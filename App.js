@@ -5,17 +5,15 @@
 'use strict';
 
 // ==================== SUPABASE CONFIG ====================
-// ⚠️  Remplacez ces deux valeurs par vos credentials Supabase
-//     Supabase > Project Settings > API
-const SUPABASE_URL = 'https://hrolvvpkpshefljlfljb.supabase.co';   // ex: https://xxxx.supabase.co
-const SUPABASE_ANON = 'ta_vraie_cle_ici';      // clé publique anon/public
+// Le SDK est chargé en UMD via CDN → window.supabase est disponible
+// Remplacez SUPABASE_ANON par votre clé anon/public (Project Settings > API)
+const SUPABASE_URL  = 'https://hrolvvpkpshefljlfljb.supabase.co';
+const SUPABASE_ANON = 'VOTRE_CLE_ANON_ICI';
 
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+// Accès correct au SDK UMD : window.supabase.createClient
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 // ==================== COUCHE BASE DE DONNÉES ====================
-// Toutes les fonctions retournent les mêmes structures qu'avant
-// pour ne rien casser dans le reste du code.
 
 async function dbAdd(formData) {
   const { refRapport, type, createdAt, ...rest } = formData;
@@ -25,7 +23,7 @@ async function dbAdd(formData) {
       ref_rapport : refRapport,
       type        : type,
       created_at  : createdAt,
-      data        : rest          // tout le reste en JSONB
+      data        : rest
     })
     .select()
     .single();
@@ -60,8 +58,6 @@ async function dbDelete(id) {
   if (error) throw error;
 }
 
-// Reconstruit un objet plat depuis la ligne Supabase
-// (réunit les colonnes principales + le blob JSONB data)
 function flattenRow(row) {
   if (!row) return null;
   return {
@@ -69,7 +65,7 @@ function flattenRow(row) {
     refRapport : row.ref_rapport,
     type       : row.type,
     createdAt  : row.created_at,
-    ...row.data              // tous les champs du formulaire
+    ...(row.data || {})
   };
 }
 
@@ -125,7 +121,6 @@ function collectForm() {
 
   data.refRapport = (document.getElementById('refRapport').value || '').trim();
 
-  // Checkboxes → tableau des valeurs cochées, groupées par name
   const groups = {};
   form.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     if (!cb.name) return;
@@ -134,7 +129,6 @@ function collectForm() {
   });
   Object.assign(data, groups);
 
-  // Textes / nombres / textareas
   form.querySelectorAll('input[type="text"], input[type="number"], input[type="tel"], textarea').forEach(el => {
     if (el.name) data[el.name] = el.value.trim();
   });
@@ -151,7 +145,7 @@ function resetForm() {
 document.getElementById('saveReportBtn').addEventListener('click', async () => {
   const data = collectForm();
   if (!data.refRapport) {
-    showToast('Renseignez le numéro OS avant d\'enregistrer.', 'error');
+    showToast("Renseignez le numéro OS avant d'enregistrer.", 'error');
     return;
   }
   const btn = document.getElementById('saveReportBtn');
@@ -163,8 +157,8 @@ document.getElementById('saveReportBtn').addEventListener('click', async () => {
     resetForm();
     renderDashboard();
   } catch(e) {
-    showToast('Erreur lors de l\'enregistrement : ' + (e.message || e), 'error');
-    console.error(e);
+    showToast('Erreur : ' + (e.message || JSON.stringify(e)), 'error');
+    console.error('dbAdd error:', e);
   } finally {
     btn.disabled = false;
     btn.textContent = '✦ Enregistrer le rapport';
@@ -321,7 +315,6 @@ function printReportHTML(r) {
 
   let corps = '';
 
-  /* ---- INTÉRIEUR ---- */
   if (r.type === 'interieur') {
     corps += sec('1. Origine du sinistre', [
       ['Ancienneté',               r.anciennete],
@@ -349,23 +342,22 @@ function printReportHTML(r) {
       ['Indices visibles',  r.indices],
     ]);
     corps += sec('5. Installations / Travaux', [
-      ['Chauffe-eau',        r.chauffe_eau],
-      ['Type',               r.chauffe_eau_type],
-      ['Travaux récents',    r.travaux],
-      ['Nature',             r.travaux_nature],
+      ['Chauffe-eau',     r.chauffe_eau],
+      ['Type',            r.chauffe_eau_type],
+      ['Travaux récents', r.travaux],
+      ['Nature',          r.travaux_nature],
     ]);
     corps += sec('6. Personnes & Accès', [
-      ['Personne présente',   r.personne],
-      ['Téléphone',           r.telephone],
-      ['Interlocuteur',       r.interlocuteur],
-      ['Coordonnées diff.',   r.coordonnees_diff],
-      ['Accès bâtiment',      r.acces],
-      ['Stationnement',       r.stationnement],
-      ['Contraintes',         r.contraintes],
+      ['Personne présente', r.personne],
+      ['Téléphone',         r.telephone],
+      ['Interlocuteur',     r.interlocuteur],
+      ['Coordonnées diff.', r.coordonnees_diff],
+      ['Accès bâtiment',    r.acces],
+      ['Stationnement',     r.stationnement],
+      ['Contraintes',       r.contraintes],
     ]);
   }
 
-  /* ---- PISCINE ---- */
   if (r.type === 'piscine') {
     corps += sec("1. Origine / Perte d'eau", [
       ['Ancienneté',                 r.p_anciennete],
@@ -380,23 +372,23 @@ function printReportHTML(r) {
       ['Volume (m³)',        r.volume_piscine],
     ]);
     corps += sec('3. Équipements présents', [
-      ['Équipements',     r.equip],
-      ['Skimmers (qté)',  r.qte_skimmers],
-      ['Refoulements',    r.qte_refoulements],
-      ['Prise balai',     r.qte_prise_balai],
-      ['Bonde de fond',   r.qte_bonde],
-      ['Trop-plein',      r.qte_trop_plein],
-      ['Projecteurs',     r.qte_projecteurs],
-      ['Pompe (qté)',     r.qte_pompe],
-      ['Filtre (qté)',    r.qte_filtre],
-      ['Type de filtre',  r.type_filtre],
-      ['Bâche / volet',   r.qte_bache],
+      ['Équipements',    r.equip],
+      ['Skimmers (qté)', r.qte_skimmers],
+      ['Refoulements',   r.qte_refoulements],
+      ['Prise balai',    r.qte_prise_balai],
+      ['Bonde de fond',  r.qte_bonde],
+      ['Trop-plein',     r.qte_trop_plein],
+      ['Projecteurs',    r.qte_projecteurs],
+      ['Pompe (qté)',    r.qte_pompe],
+      ['Filtre (qté)',   r.qte_filtre],
+      ['Type de filtre', r.type_filtre],
+      ['Bâche / volet',  r.qte_bache],
     ]);
     corps += sec('4. Local technique', [
-      ['Local présent',        r.local_technique],
-      ['Contient',             r.local_contient],
-      ['Autre équipement',     r.local_autre_equip],
-      ["Traces d'humidité",    r.p_humidite_local],
+      ['Local présent',     r.local_technique],
+      ['Contient',          r.local_contient],
+      ['Autre équipement',  r.local_autre_equip],
+      ["Traces d'humidité", r.p_humidite_local],
     ]);
     corps += sec('5. Analyse technique par zone', [
       ['Skimmers — Défaut visible',             r.p_defaut_skimmer],
@@ -419,18 +411,16 @@ function printReportHTML(r) {
     ]);
   }
 
-  /* ---- TOITURE ---- */
   if (r.type === 'toiture') {
     corps += sec('1. Origine du problème', [
-      ['Ancienneté',       r.t_anciennete],
-      ['Conditions',       r.t_condition],
-      ['Zone intérieure',  r.t_zone_int],
-      ['Précision',        r.t_zone_int_autre],
-      ['Observations',     r.t_observations],
+      ['Ancienneté',      r.t_anciennete],
+      ['Conditions',      r.t_condition],
+      ['Zone intérieure', r.t_zone_int],
+      ['Précision',       r.t_zone_int_autre],
+      ['Observations',    r.t_observations],
     ]);
   }
 
-  /* ---- EXTÉRIEUR ---- */
   if (r.type === 'exterieur') {
     corps += sec('1. Origine du problème', [
       ['Ancienneté',               r.e_anciennete],
@@ -484,60 +474,36 @@ function printReportHTML(r) {
   @page { size:A4; margin:14mm 13mm 18mm; }
   *{ box-sizing:border-box; margin:0; padding:0; }
   body{ font-family:'Lato',Arial,sans-serif; font-size:9.5pt; color:#1a1e2e; background:#fff; }
-
-  .header{
-    border-left: 5px solid ${A};
-    padding: 10px 14px;
-    margin-bottom: 18px;
-    background: #f4f6fa;
-  }
+  .header{ border-left:5px solid ${A}; padding:10px 14px; margin-bottom:18px; background:#f4f6fa; }
   .header .os-number{ font-size:20pt; font-weight:900; color:${C}; line-height:1.1; }
   .header .os-number span{ color:${A}; }
   .header .type-line{ margin-top:5px; }
-  .badge{
-    display:inline-block; background:${C}; color:#fff; font-weight:700;
-    font-size:8.5pt; text-transform:uppercase; letter-spacing:.06em;
-    padding:3px 12px; border-radius:4px;
-  }
+  .badge{ display:inline-block; background:${C}; color:#fff; font-weight:700;
+          font-size:8.5pt; text-transform:uppercase; letter-spacing:.06em; padding:3px 12px; border-radius:4px; }
   .header .meta{ font-size:7.5pt; color:#888; margin-top:5px; }
-
   .sec{ margin-bottom:9px; page-break-inside:avoid; }
-  .sec-title{
-    background:${C}; color:${A}; font-weight:700; font-size:7.5pt;
-    text-transform:uppercase; letter-spacing:.08em; padding:4px 8px;
-  }
+  .sec-title{ background:${C}; color:${A}; font-weight:700; font-size:7.5pt;
+              text-transform:uppercase; letter-spacing:.08em; padding:4px 8px; }
   table{ width:100%; border-collapse:collapse; font-size:9pt; }
   tr:nth-child(even) td{ background:#f4f6fa; }
   td{ padding:3.5px 8px; border-bottom:1px solid #e8ecf4; vertical-align:top; }
   td.lbl{ width:42%; font-weight:700; color:#555; }
-
-  .footer{
-    position:fixed; bottom:0; left:0; right:0; text-align:center;
-    font-size:7pt; color:#bbb; border-top:1px solid #e8ecf4; padding-top:4px;
-  }
+  .footer{ position:fixed; bottom:0; left:0; right:0; text-align:center;
+           font-size:7pt; color:#bbb; border-top:1px solid #e8ecf4; padding-top:4px; }
   .footer b{ color:${C}; }
-
-  @media print{
-    body{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  }
+  @media print{ body{ -webkit-print-color-adjust:exact; print-color-adjust:exact; } }
 </style>
 </head><body>
-
 <div class="header">
   <div class="os-number">OS n° <span>${r.refRapport || '—'}</span></div>
   <div class="type-line"><span class="badge">${typeLabel(r.type)}</span></div>
   <div class="meta">Créé le ${formatDatetime(r.createdAt)} &nbsp;·&nbsp; SOS Fuite d'Eau</div>
 </div>
-
 ${corps}
-
 <div class="footer">
-  SOS Fuite d'Eau &nbsp;&middot;&nbsp;
-  OS n° <b>${r.refRapport || '—'}</b> &nbsp;&middot;&nbsp;
-  ${typeLabel(r.type)} &nbsp;&middot;&nbsp;
-  Généré le ${formatDatetime(r.createdAt)}
+  SOS Fuite d'Eau &nbsp;&middot;&nbsp; OS n° <b>${r.refRapport || '—'}</b> &nbsp;&middot;&nbsp;
+  ${typeLabel(r.type)} &nbsp;&middot;&nbsp; Généré le ${formatDatetime(r.createdAt)}
 </div>
-
 <script>window.onload=function(){setTimeout(function(){window.print();},350);};<\/script>
 </body></html>`;
 
@@ -545,7 +511,7 @@ ${corps}
   if (!w) { showToast('Autorisez les popups pour générer le PDF.', 'error'); return; }
   w.document.write(html);
   w.document.close();
-  showToast('Choisissez "Enregistrer en PDF" dans la boîte d\'impression.', 'success');
+  showToast("Choisissez \"Enregistrer en PDF\" dans la boîte d'impression.", 'success');
 }
 
 // ==================== HELPERS ====================
@@ -569,10 +535,5 @@ function showToast(msg, type='') {
 
 // ==================== INIT ====================
 (async () => {
-  // Vérification que les credentials sont configurés
-  if (SUPABASE_URL === 'VOTRE_SUPABASE_URL' || SUPABASE_ANON === 'VOTRE_ANON_KEY') {
-    showToast('⚠️ Configurez vos credentials Supabase dans app.js', 'error');
-    console.warn('Supabase non configuré — voir les constantes SUPABASE_URL et SUPABASE_ANON en haut de app.js');
-  }
   renderDashboard();
 })();
