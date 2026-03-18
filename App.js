@@ -7,8 +7,8 @@
 // ==================== SUPABASE CONFIG ====================
 // ⚠️  Remplacez ces deux valeurs par vos credentials Supabase
 //     Supabase > Project Settings > API
-const SUPABASE_URL    = 'VOTRE_SUPABASE_URL';   // ex: https://xxxx.supabase.co
-const SUPABASE_ANON   = 'VOTRE_ANON_KEY';        // clé publique anon/public
+const SUPABASE_URL = 'https://hrolvvpkpshefljlfljb.supabase.co';   // ex: https://xxxx.supabase.co
+const SUPABASE_ANON = 'ta_vraie_cle_ici';      // clé publique anon/public
 
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
