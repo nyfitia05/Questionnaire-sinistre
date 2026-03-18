@@ -54,7 +54,7 @@
           <div class="form-card-header">Informations générales</div>
           <div class="form-card-body">
             <div class="field-group">
-              <label>Numéro OS</label>
+              <label>Numéro de dossier</label>
               <input type="text" id="refRapport" placeholder="Ex : 3256" />
             </div>
           </div>
@@ -838,7 +838,7 @@
       <table class="reports-table">
         <thead>
           <tr>
-            <th>N° OS</th>
+            <th>N° Dossier</th>
             <th>Type</th>
             <th>Contact</th>
             <th>Téléphone</th>
@@ -977,7 +977,7 @@ function resetForm() { document.getElementById('mainForm').reset(); }
 // ==================== ENREGISTRER ====================
 document.getElementById('saveReportBtn').addEventListener('click', async () => {
   const data = collectForm();
-  if (!data.refRapport) { showToast("Renseignez le numéro OS avant d'enregistrer.", 'error'); return; }
+  if (!data.refRapport) { showToast("Renseignez le numéro de dossier avant d'enregistrer.", 'error'); return; }
   const btn = document.getElementById('saveReportBtn');
   btn.disabled = true;
   btn.textContent = 'Enregistrement…';
@@ -1040,7 +1040,7 @@ async function renderTable(filter) {
     empty.style.display = 'none';
     tbody.innerHTML = rows.map(r => `
       <tr>
-        <td><strong>OS ${r.refRapport || '—'}</strong></td>
+        <td><strong>Dossier ${r.refRapport || '—'}</strong></td>
         <td><span class="type-pill ${r.type}">${typeLabel(r.type)}</span></td>
         <td>${r.personne || r.p_personne || r.e_personne || '—'}</td>
         <td>${r.telephone || r.p_telephone || r.e_telephone || '—'}</td>
@@ -1123,7 +1123,7 @@ function printReportHTML(r) {
   }
   const C = '#2a3963', A = '#b0ca60';
   const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/>
-<title>OS ${r.refRapport||r.id}</title>
+<title>Dossier ${r.refRapport||r.id}</title>
 <style>
   @page{size:A4;margin:14mm 13mm 18mm}*{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Lato',Arial,sans-serif;font-size:9.5pt;color:#1a1e2e}
@@ -1142,12 +1142,12 @@ function printReportHTML(r) {
   @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style></head><body>
 <div class="header">
-  <div class="os">OS n° <span>${r.refRapport||'—'}</span></div>
+  <div class="os">Dossier n° <span>${r.refRapport||'—'}</span></div>
   <div><span class="badge">${typeLabel(r.type)}</span></div>
   <div class="meta">Créé le ${formatDatetime(r.createdAt)} · SOS Fuite d'Eau</div>
 </div>
 ${corps}
-<div class="footer">SOS Fuite d'Eau · OS n° <b>${r.refRapport||'—'}</b> · ${typeLabel(r.type)} · ${formatDatetime(r.createdAt)}</div>
+<div class="footer">SOS Fuite d'Eau · Dossier n° <b>${r.refRapport||'—'}</b> · ${typeLabel(r.type)} · ${formatDatetime(r.createdAt)}</div>
 <script>window.onload=function(){setTimeout(function(){window.print();},350);};<\/script>
 </body></html>`;
   const w = window.open('', '_blank');
