@@ -22,6 +22,38 @@
       color: #1a1e2e;
       background: #f9fafd;
     }
+    .module-toggle-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .module-toggle-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border: 2px solid #d0d7e8;
+      border-radius: 6px;
+      background: #f4f6fa;
+      color: #555;
+      font-weight: 700;
+      font-size: 9pt;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .module-toggle-btn.active {
+      border-color: #2a3963;
+      background: #2a3963;
+      color: #b0ca60;
+    }
+    .module-panel { display: none; }
+    .module-panel.active { display: block; }
+    .module-label {
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #888;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -617,15 +649,18 @@
 
         <!-- ======== TOITURE ======== -->
         <div class="panel" id="panel-toiture">
+
+          <!-- SECTION 1 — ORIGINE -->
           <div class="form-card">
             <div class="form-card-header">1️⃣ Origine du problème</div>
             <div class="form-card-body">
               <div class="check-group">
-                <label class="check-label">Depuis quand :</label>
+                <label class="check-label">Depuis quand les infiltrations sont-elles constatées :</label>
                 <div class="checks-row">
                   <label class="checkbox-item"><input type="checkbox" name="t_anciennete" value="moins24h"/> &lt;24h</label>
                   <label class="checkbox-item"><input type="checkbox" name="t_anciennete" value="2-7j"/> 2–7j</label>
                   <label class="checkbox-item"><input type="checkbox" name="t_anciennete" value="plus7j"/> &gt;7j</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_anciennete" value="inconnu"/> Inconnu</label>
                   <label class="checkbox-item"><input type="checkbox" name="t_anciennete" value="autre" class="triggers-preciser" data-target="t_anciennete_autre_wrap"/> Autre</label>
                 </div>
                 <div class="preciser-field" id="t_anciennete_autre_wrap">
@@ -635,15 +670,29 @@
               <div class="check-group">
                 <label class="check-label">Les infiltrations apparaissent :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="t_condition" value="fortes_pluies"/> Fortes pluies</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_condition" value="fortes_pluies"/> Après fortes pluies</label>
                   <label class="checkbox-item"><input type="checkbox" name="t_condition" value="pluies_continues"/> Pluies continues</label>
                   <label class="checkbox-item"><input type="checkbox" name="t_condition" value="vent_pluie"/> Vent + pluie</label>
                   <label class="checkbox-item"><input type="checkbox" name="t_condition" value="fonte_neige"/> Fonte de neige</label>
                   <label class="checkbox-item"><input type="checkbox" name="t_condition" value="permanente"/> Permanente</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_condition" value="inconnue"/> Inconnue</label>
                   <label class="checkbox-item"><input type="checkbox" name="t_condition" value="autre" class="triggers-preciser" data-target="t_condition_autre_wrap"/> Autre</label>
                 </div>
                 <div class="preciser-field" id="t_condition_autre_wrap">
                   <input type="text" name="t_condition_autre" placeholder="Préciser si autre" />
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Type de dégât :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_degat" value="ecoulements"/> Écoulements</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_degat" value="aureoles"/> Auréoles</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_degat" value="moisissures"/> Moisissures</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_degat" value="cloques"/> Cloques</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_degat" value="autre" class="triggers-preciser" data-target="t_type_degat_autre_wrap"/> Autre</label>
+                </div>
+                <div class="preciser-field" id="t_type_degat_autre_wrap">
+                  <input type="text" name="t_type_degat_autre" placeholder="Préciser si autre" />
                 </div>
               </div>
               <div class="check-group">
@@ -659,11 +708,220 @@
                 </div>
               </div>
               <div class="field-group">
+                <label>Pièce impactée</label>
+                <input type="text" name="t_piece_impactee" placeholder="Ex : salon, chambre, couloir…" />
+              </div>
+              <div class="field-group">
+                <label>Étage</label>
+                <input type="text" name="t_etage" placeholder="Ex : dernier étage, RDC…" />
+              </div>
+              <div class="check-group">
+                <label class="check-label">Type de toiture :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="plate"/> Toit plat</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="pente"/> Toit en pente</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="terrasse"/> Terrasse</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="autre" class="triggers-preciser" data-target="t_type_toiture_autre_wrap"/> Autre</label>
+                </div>
+                <div class="preciser-field" id="t_type_toiture_autre_wrap">
+                  <input type="text" name="t_type_toiture_autre" placeholder="Préciser si autre" />
+                </div>
+              </div>
+              <div class="field-group">
                 <label>Observations complémentaires</label>
-                <textarea name="t_observations" rows="3"></textarea>
+                <textarea name="t_observations" rows="3" placeholder="Détails supplémentaires…"></textarea>
               </div>
             </div>
           </div>
+
+          <!-- MODULE A — TOIT PLAT -->
+          <div class="form-card">
+            <div class="form-card-header">🧱 Module A — Toit plat <span style="font-weight:400;font-size:8.5pt;opacity:.7">(à compléter si toit plat)</span></div>
+            <div class="form-card-body">
+              <div class="module-label">A1 · Surface &amp; Composition</div>
+              <div class="field-group">
+                <label>Surface approximative (m²)</label>
+                <input type="number" name="t_a_surface" placeholder="m²" />
+              </div>
+              <div class="check-group">
+                <label class="check-label">Type d'étanchéité :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_etancheite" value="bitumineuse"/> Bitumineuse</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_etancheite" value="pvc"/> PVC</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_etancheite" value="epdm"/> EPDM</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_etancheite" value="resine"/> Résine</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_etancheite" value="autre" class="triggers-preciser" data-target="t_a_etancheite_autre_wrap"/> Autre</label>
+                </div>
+                <div class="preciser-field" id="t_a_etancheite_autre_wrap">
+                  <input type="text" name="t_a_etancheite_autre" placeholder="Préciser si autre" />
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Protection de l'étanchéité :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_protection" value="apparente"/> Apparente</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_protection" value="gravillons"/> Gravillons</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_protection" value="dalles_plots"/> Dalles sur plots</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_protection" value="vegetalisee"/> Végétalisée</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_protection" value="inconnue"/> Inconnue</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Isolation sous étanchéité :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_isolation" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_isolation" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_isolation" value="inconnue"/> Inconnue</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Âge estimé de l'étanchéité :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_age" value="moins5ans"/> &lt;5 ans</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_age" value="5-10ans"/> 5–10 ans</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_age" value="plus10ans"/> &gt;10 ans</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_age" value="inconnu"/> Inconnu</label>
+                </div>
+              </div>
+
+              <div class="module-label" style="margin-top:14px">A2 · Équipements de sécurité &amp; Accès — Toit plat</div>
+              <div class="check-group">
+                <label class="check-label">Présence de garde-corps périphériques :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_gardecorps" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_gardecorps" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_gardecorps" value="partiels"/> Partiels</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Présence de ligne(s) de vie :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_ligne_vie" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_ligne_vie" value="non"/> Non</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Présence de points d'ancrage :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_ancrage" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_ancrage" value="non"/> Non</label>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Type d'accès</label>
+                <input type="text" name="t_a_type_acces" placeholder="Trappe, escalier, nacelle…" />
+              </div>
+              <div class="field-group">
+                <label>Hauteur de l'accès</label>
+                <input type="text" name="t_a_hauteur_acces" placeholder="Ex : 4 m, RDC+2…" />
+              </div>
+              <div class="check-group">
+                <label class="check-label">Échelle sur place :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_echelle" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_a_echelle" value="non"/> Non</label>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Qui donne l'accès</label>
+                <input type="text" name="t_a_qui_acces" placeholder="Gardien, propriétaire, code…" />
+              </div>
+              <div class="field-group">
+                <label>Stationnement</label>
+                <input type="text" name="t_a_stationnement" placeholder="Ex : place disponible, difficile…" />
+              </div>
+            </div>
+          </div>
+
+          <!-- MODULE B — TOIT EN PENTE -->
+          <div class="form-card">
+            <div class="form-card-header">🏠 Module B — Toit en pente <span style="font-weight:400;font-size:8.5pt;opacity:.7">(à compléter si toit en pente)</span></div>
+            <div class="form-card-body">
+              <div class="module-label">B1 · Surface &amp; Composition</div>
+              <div class="field-group">
+                <label>Surface approximative (m²)</label>
+                <input type="number" name="t_b_surface" placeholder="m²" />
+              </div>
+              <div class="field-group">
+                <label>Pente approximative (%)</label>
+                <input type="number" name="t_b_pente" placeholder="%" />
+              </div>
+              <div class="check-group">
+                <label class="check-label">Type de couverture :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_couverture" value="tuiles"/> Tuiles</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_couverture" value="ardoises"/> Ardoises</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_couverture" value="bac_acier"/> Bac acier</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_couverture" value="zinc"/> Zinc</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_couverture" value="autre" class="triggers-preciser" data-target="t_b_couverture_autre_wrap"/> Autre</label>
+                </div>
+                <div class="preciser-field" id="t_b_couverture_autre_wrap">
+                  <input type="text" name="t_b_couverture_autre" placeholder="Préciser si autre" />
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">État apparent de la couverture :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_etat" value="bon"/> Bon</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_etat" value="moyen"/> Moyen</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_etat" value="degrade"/> Dégradé</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_etat" value="inconnu"/> Inconnu</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Présence d'une sous-toiture :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_sous_toiture" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_sous_toiture" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_sous_toiture" value="inconnu"/> Inconnu</label>
+                </div>
+              </div>
+              <div class="check-group">
+                <label class="check-label">Âge estimé de la couverture :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_age" value="moins5ans"/> &lt;5 ans</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_age" value="5-10ans"/> 5–10 ans</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_age" value="plus10ans"/> &gt;10 ans</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_age" value="inconnu"/> Inconnu</label>
+                </div>
+              </div>
+
+              <div class="module-label" style="margin-top:14px">B2 · Équipements de sécurité &amp; Accès — Toit en pente</div>
+              <div class="check-group">
+                <label class="check-label">Présence de dispositifs antichute :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_antichute" value="crochets"/> Crochets de sécurité</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_antichute" value="lignes_vie"/> Lignes de vie</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_antichute" value="ancrage"/> Points d'ancrage</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_antichute" value="aucun"/> Aucun dispositif</label>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Type d'accès</label>
+                <input type="text" name="t_b_type_acces" placeholder="Trappe, fenêtre de toit, échelle fixe…" />
+              </div>
+              <div class="field-group">
+                <label>Hauteur de l'accès</label>
+                <input type="text" name="t_b_hauteur_acces" placeholder="Ex : 5 m, faîtage à 8 m…" />
+              </div>
+              <div class="check-group">
+                <label class="check-label">Échelle sur place :</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_echelle" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_b_echelle" value="non"/> Non</label>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Qui donne l'accès</label>
+                <input type="text" name="t_b_qui_acces" placeholder="Gardien, propriétaire, code…" />
+              </div>
+              <div class="field-group">
+                <label>Stationnement</label>
+                <input type="text" name="t_b_stationnement" placeholder="Ex : place disponible, difficile…" />
+              </div>
+            </div>
+          </div>
+
         </div><!-- /panel-toiture -->
 
         <!-- ======== EXTÉRIEUR ======== -->
@@ -1007,13 +1265,12 @@ function flattenRow(row) {
   return { id: row.id, refRapport: row.ref_rapport, type: row.type, createdAt: row.created_at, ...(row.data || {}) };
 }
 
-// ==================== PRÉCISER SI AUTRE — affichage conditionnel ====================
+// ==================== PRÉCISER SI AUTRE ====================
 document.addEventListener('change', function(e) {
   if (e.target.classList.contains('triggers-preciser')) {
     const targetId = e.target.dataset.target;
     const wrap = document.getElementById(targetId);
     if (!wrap) return;
-    // Vérifier si AU MOINS UNE checkbox avec ce data-target est cochée
     const anyChecked = document.querySelectorAll(
       '.triggers-preciser[data-target="' + targetId + '"]:checked'
     ).length > 0;
@@ -1087,7 +1344,6 @@ function collectForm() {
 
 function resetForm() {
   document.getElementById('mainForm').reset();
-  // Masquer tous les champs "préciser si autre"
   document.querySelectorAll('.preciser-field').forEach(f => {
     f.classList.remove('visible');
     const input = f.querySelector('input');
@@ -1219,17 +1475,14 @@ function printReportHTML(r) {
     if (!rows) return '';
     return `<div class="sec"><div class="sec-title">${titre}</div><table>${rows}</table></div>`;
   }
-
-  // Helper: affiche la valeur + précision "autre" si renseignée
   function withAutre(v, autreVal) {
     const base = val(v);
     if (!base) return '';
-    if (autreVal && Array.isArray(v) && v.includes('autre')) return base + (autreVal ? ' — ' + autreVal : '');
-    if (autreVal && v === 'autre') return base + ' — ' + autreVal;
     return autreVal && base.includes('autre') ? base + ' — ' + autreVal : base;
   }
 
   let corps = '';
+
   if (r.type === 'interieur') {
     corps += sec('1. Origine du sinistre', [
       ['Ancienneté', withAutre(r.anciennete, r.anciennete_autre)],
@@ -1266,6 +1519,7 @@ function printReportHTML(r) {
       ['Accès', r.acces],['Stationnement', r.stationnement],['Contraintes', r.contraintes]
     ]);
   }
+
   if (r.type === 'piscine') {
     corps += sec("1. Origine / Perte d'eau", [
       ['Ancienneté', withAutre(r.p_anciennete, r.p_anciennete_autre)],
@@ -1306,14 +1560,53 @@ function printReportHTML(r) {
       ['Accès', r.p_acces],['Stationnement', r.p_stationnement],['Contraintes', r.p_contraintes]
     ]);
   }
+
   if (r.type === 'toiture') {
     corps += sec('1. Origine', [
       ['Ancienneté', withAutre(r.t_anciennete, r.t_anciennete_autre)],
       ['Conditions', withAutre(r.t_condition, r.t_condition_autre)],
+      ['Type de dégât', withAutre(r.t_type_degat, r.t_type_degat_autre)],
       ['Zone intérieure', withAutre(r.t_zone_int, r.t_zone_int_autre)],
+      ['Pièce impactée', r.t_piece_impactee],
+      ['Étage', r.t_etage],
+      ['Type de toiture', withAutre(r.t_type_toiture, r.t_type_toiture_autre)],
       ['Observations', r.t_observations]
     ]);
+    corps += sec('Module A — Toit plat · Surface & Composition', [
+      ['Surface (m²)', r.t_a_surface],
+      ['Type étanchéité', withAutre(r.t_a_etancheite, r.t_a_etancheite_autre)],
+      ['Protection', r.t_a_protection],
+      ['Isolation', r.t_a_isolation],
+      ['Âge étanchéité', r.t_a_age]
+    ]);
+    corps += sec('Module A — Toit plat · Sécurité & Accès', [
+      ['Garde-corps', r.t_a_gardecorps],
+      ['Ligne de vie', r.t_a_ligne_vie],
+      ["Points d'ancrage", r.t_a_ancrage],
+      ["Type d'accès", r.t_a_type_acces],
+      ["Hauteur d'accès", r.t_a_hauteur_acces],
+      ['Échelle sur place', r.t_a_echelle],
+      ["Qui donne l'accès", r.t_a_qui_acces],
+      ['Stationnement', r.t_a_stationnement]
+    ]);
+    corps += sec('Module B — Toit en pente · Surface & Composition', [
+      ['Surface (m²)', r.t_b_surface],
+      ['Pente (%)', r.t_b_pente],
+      ['Type couverture', withAutre(r.t_b_couverture, r.t_b_couverture_autre)],
+      ['État couverture', r.t_b_etat],
+      ['Sous-toiture', r.t_b_sous_toiture],
+      ['Âge couverture', r.t_b_age]
+    ]);
+    corps += sec('Module B — Toit en pente · Sécurité & Accès', [
+      ['Antichute', r.t_b_antichute],
+      ["Type d'accès", r.t_b_type_acces],
+      ["Hauteur d'accès", r.t_b_hauteur_acces],
+      ['Échelle sur place', r.t_b_echelle],
+      ["Qui donne l'accès", r.t_b_qui_acces],
+      ['Stationnement', r.t_b_stationnement]
+    ]);
   }
+
   if (r.type === 'exterieur') {
     corps += sec('1. Origine', [
       ['Ancienneté', withAutre(r.e_anciennete, r.e_anciennete_autre)],
@@ -1398,7 +1691,6 @@ function showToast(msg, type='') {
 
 // ==================== INIT ====================
 updateCount();
-
 </script>
 </body>
 </html>
