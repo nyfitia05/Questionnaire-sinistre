@@ -113,6 +113,68 @@
         <!-- ======== INTÉRIEUR ======== -->
         <div class="panel active" id="panel-interieur">
           <div class="form-card">
+            <div class="form-card-header">0️⃣ Type de logement</div>
+            <div class="form-card-body">
+              <div class="check-group">
+                <label class="check-label">Etes-vous en maison ou en appartement ?</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="type_logement" value="maison" class="triggers-logement" data-target="maison_options"/> Maison</label>
+                  <label class="checkbox-item"><input type="checkbox" name="type_logement" value="appartement" class="triggers-logement" data-target="appartement_options"/> Appartement</label>
+                </div>
+              </div>
+              
+              <div class="preciser-field" id="appartement_options">
+                <div class="check-group">
+                  <label class="check-label">Avez-vous prévenu votre syndic ?</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="syndic_prevenu" value="oui"/> Oui</label>
+                    <label class="checkbox-item"><input type="checkbox" name="syndic_prevenu" value="non"/> Non</label>
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label>Quel est le nom de votre syndic :</label>
+                  <input type="text" name="nom_syndic" placeholder="Nom du syndic" />
+                </div>
+              </div>
+              
+              <div class="preciser-field" id="maison_options">
+                <div class="check-group">
+                  <label class="check-label">Type de maison :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="type_maison" value="individuelle"/> Maison individuelle</label>
+                    <label class="checkbox-item"><input type="checkbox" name="type_maison" value="mitoyenne"/> Maison mitoyenne</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-card">
+            <div class="form-card-header">👥 Gestion des sinistrés</div>
+            <div class="form-card-body">
+              <div class="check-group">
+                <label class="check-label">Plusieurs sinistrés concernés ?</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="plusieurs_sinistres" value="oui" class="triggers-preciser" data-target="sinistres_details_wrap"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="plusieurs_sinistres" value="non"/> Non</label>
+                </div>
+              </div>
+              
+              <div class="preciser-field" id="sinistres_details_wrap">
+                <div class="field-group">
+                  <label>Nom et étage des sinistrés</label>
+                  <textarea name="sinistres_details" rows="4" placeholder="Ex :
+- M. Dupont - 2ème étage - Infiltration salle de bain
+- Mme Martin - 3ème étage - Plafond chambre
+- M. Leroy - 2ème étage - Mur salon"></textarea>
+                </div>
+                <div class="field-group">
+                  <label>Précisions sur les sinistres de chaque personne</label>
+                  <textarea name="sinistres_precisions" rows="3" placeholder="Détails supplémentaires sur les sinistres de chaque sinistré..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-card">
             <div class="form-card-header">1️⃣ Origine du sinistre</div>
             <div class="form-card-body">
               <div class="check-group">
@@ -372,6 +434,15 @@
               <div class="field-group">
                 <label>Contraintes particulières</label>
                 <textarea name="contraintes" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-card">
+            <div class="form-card-header">💬 Commentaires</div>
+            <div class="form-card-body">
+              <div class="field-group">
+                <label>Commentaires de l'opératrice</label>
+                <textarea name="commentaires" rows="4" placeholder="Informations complémentaires fournies par le client, notes importantes..."></textarea>
               </div>
             </div>
           </div>
@@ -642,6 +713,15 @@
               <div class="field-group">
                 <label>Contraintes particulières</label>
                 <textarea name="p_contraintes" rows="2" placeholder="Animaux, pente, végétation, horaires…"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-card">
+            <div class="form-card-header">💬 Commentaires</div>
+            <div class="form-card-body">
+              <div class="field-group">
+                <label>Commentaires de l'opératrice</label>
+                <textarea name="p_commentaires" rows="4" placeholder="Informations complémentaires fournies par le client, notes importantes..."></textarea>
               </div>
             </div>
           </div>
@@ -921,11 +1001,48 @@
               </div>
             </div>
           </div>
+          <div class="form-card">
+            <div class="form-card-header">💬 Commentaires</div>
+            <div class="form-card-body">
+              <div class="field-group">
+                <label>Commentaires de l'opératrice</label>
+                <textarea name="t_commentaires" rows="4" placeholder="Informations complémentaires fournies par le client, notes importantes..."></textarea>
+              </div>
+            </div>
+          </div>
 
         </div><!-- /panel-toiture -->
 
         <!-- ======== EXTÉRIEUR ======== -->
         <div class="panel" id="panel-exterieur">
+          <div class="form-card">
+            <div class="form-card-header">0️⃣ Type de logement</div>
+            <div class="form-card-body">
+              <div class="check-group">
+                <label class="check-label">Etes vous en maison ou en appartement ?</label>
+                <div class="checks-row">
+                  <label class="checkbox-item"><input type="checkbox" name="e_type_logement" value="maison" class="triggers-logement" data-target="e_maison_options"/> Maison</label>
+                  <label class="checkbox-item"><input type="checkbox" name="e_type_logement" value="appartement" class="triggers-logement" data-target="e_appartement_options"/> Appartement</label>
+                </div>
+              </div>
+              
+              <div class="preciser-field" id="e_appartement_options">
+                <div class="alert-box" style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px; padding: 12px; margin-bottom: 12px;">
+                  <p style="margin: 0; color: #856404; font-weight: 600;">⚠️ Si appartement : REMPLIR questionnaire « intérieur »</p>
+                </div>
+              </div>
+              
+              <div class="preciser-field" id="e_maison_options">
+                <div class="check-group">
+                  <label class="check-label">Type de maison :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="e_type_maison" value="individuelle"/> Individuelle</label>
+                    <label class="checkbox-item"><input type="checkbox" name="e_type_maison" value="mitoyenne"/> Mitoyenne</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="form-card">
             <div class="form-card-header">1️⃣ Origine du problème</div>
             <div class="form-card-body">
@@ -1164,6 +1281,15 @@
               </div>
             </div>
           </div>
+          <div class="form-card">
+            <div class="form-card-header">💬 Commentaires</div>
+            <div class="form-card-body">
+              <div class="field-group">
+                <label>Commentaires de l'opératrice</label>
+                <textarea name="e_commentaires" rows="4" placeholder="Informations complémentaires fournies par le client, notes importantes..."></textarea>
+              </div>
+            </div>
+          </div>
         </div><!-- /panel-exterieur -->
 
         <div class="form-actions">
@@ -1265,8 +1391,9 @@ function flattenRow(row) {
   return { id: row.id, refRapport: row.ref_rapport, type: row.type, createdAt: row.created_at, ...(row.data || {}) };
 }
 
-// ==================== PRÉCISER SI AUTRE ====================
+// ==================== PRÉCISER SI AUTRE & LOGEMENT ====================
 document.addEventListener('change', function(e) {
+  // Gestion des champs "préciser si autre"
   if (e.target.classList.contains('triggers-preciser')) {
     const targetId = e.target.dataset.target;
     const wrap = document.getElementById(targetId);
@@ -1278,6 +1405,27 @@ document.addEventListener('change', function(e) {
     if (!anyChecked) {
       const input = wrap.querySelector('input');
       if (input) input.value = '';
+    }
+  }
+  
+  // Gestion des sections logement (maison/appartement)
+  if (e.target.classList.contains('triggers-logement')) {
+    const targetId = e.target.dataset.target;
+    const wrap = document.getElementById(targetId);
+    if (!wrap) return;
+    const isChecked = e.target.checked;
+    wrap.classList.toggle('visible', isChecked);
+    
+    // Si on décoche, vider les champs
+    if (!isChecked) {
+      const inputs = wrap.querySelectorAll('input[type="checkbox"], input[type="text"], textarea');
+      inputs.forEach(input => {
+        if (input.type === 'checkbox') {
+          input.checked = false;
+        } else {
+          input.value = '';
+        }
+      });
     }
   }
 });
@@ -1484,6 +1632,17 @@ function printReportHTML(r) {
   let corps = '';
 
   if (r.type === 'interieur') {
+    corps += sec('0. Type de logement', [
+      ['Type de logement', r.type_logement],
+      ['Syndic prévenu', r.syndic_prevenu],
+      ['Nom du syndic', r.nom_syndic],
+      ['Type de maison', r.type_maison]
+    ]);
+    corps += sec('Gestion des sinistrés', [
+      ['Plusieurs sinistrés', r.plusieurs_sinistres],
+      ['Détails sinistrés', r.sinistres_details],
+      ['Précisions sinistres', r.sinistres_precisions]
+    ]);
     corps += sec('1. Origine du sinistre', [
       ['Ancienneté', withAutre(r.anciennete, r.anciennete_autre)],
       ['Dégât progresse', r.degat_progresse],
@@ -1518,6 +1677,7 @@ function printReportHTML(r) {
       ['Interlocuteur', r.interlocuteur],['Coordonnées diff.', r.coordonnees_diff],
       ['Accès', r.acces],['Stationnement', r.stationnement],['Contraintes', r.contraintes]
     ]);
+    corps += sec('Commentaires', [['Commentaires opératrice', r.commentaires]]);
   }
 
   if (r.type === 'piscine') {
@@ -1559,6 +1719,7 @@ function printReportHTML(r) {
       ['Interlocuteur', r.p_interlocuteur],['Coordonnées diff.', r.p_coordonnees_diff],
       ['Accès', r.p_acces],['Stationnement', r.p_stationnement],['Contraintes', r.p_contraintes]
     ]);
+    corps += sec('Commentaires', [['Commentaires opératrice', r.p_commentaires]]);
   }
 
   if (r.type === 'toiture') {
@@ -1605,9 +1766,14 @@ function printReportHTML(r) {
       ["Qui donne l'accès", r.t_b_qui_acces],
       ['Stationnement', r.t_b_stationnement]
     ]);
+    corps += sec('Commentaires', [['Commentaires opératrice', r.t_commentaires]]);
   }
 
   if (r.type === 'exterieur') {
+    corps += sec('0. Type de logement', [
+      ['Type de logement', r.e_type_logement],
+      ['Type de maison', r.e_type_maison]
+    ]);
     corps += sec('1. Origine', [
       ['Ancienneté', withAutre(r.e_anciennete, r.e_anciennete_autre)],
       ["Surconso.", r.surconso],['Compteur tourne', r.compteur_tourne],
@@ -1636,6 +1802,7 @@ function printReportHTML(r) {
       ['Interlocuteur', r.e_interlocuteur],['Accès', r.e_acces],
       ['Stationnement', r.e_stationnement],['Contraintes', r.e_contraintes]
     ]);
+    corps += sec('Commentaires', [['Commentaires opératrice', r.e_commentaires]]);
   }
 
   const C = '#2a3963', A = '#b0ca60';
