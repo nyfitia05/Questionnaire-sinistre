@@ -4,57 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SOS Fuite d'Eau — Questionnaires d'Intervention</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .preciser-field {
-      display: none;
-      margin-top: 6px;
-    }
-    .preciser-field.visible {
-      display: block;
-    }
-    .preciser-field input {
-      width: 100%;
-      padding: 6px 10px;
-      border: 1px solid #d0d7e8;
-      border-radius: 4px;
-      font-size: 9pt;
-      color: #1a1e2e;
-      background: #f9fafd;
-    }
-    .module-toggle-group {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .module-toggle-btn {
-      flex: 1;
-      padding: 8px 12px;
-      border: 2px solid #d0d7e8;
-      border-radius: 6px;
-      background: #f4f6fa;
-      color: #555;
-      font-weight: 700;
-      font-size: 9pt;
-      cursor: pointer;
-      transition: all .15s;
-    }
-    .module-toggle-btn.active {
-      border-color: #2a3963;
-      background: #2a3963;
-      color: #b0ca60;
-    }
-    .module-panel { display: none; }
-    .module-panel.active { display: block; }
-    .module-label {
-      font-size: 8pt;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      color: #888;
-      margin-bottom: 10px;
-    }
-  </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
@@ -68,14 +18,13 @@
     <li><a href="#" class="nav-item" data-view="liste"><span class="nav-icon">≡</span> Tous les questionnaires</a></li>
   </ul>
   <div class="sidebar-footer">
-    <div class="version-tag">v1.0 · 2025</div>
+    <div class="version-tag">v1.1 · 2025</div>
   </div>
 </nav>
 
 <!-- ===== MAIN ===== -->
 <main class="main-content" id="mainContent">
 
-  <!-- TOPBAR -->
   <header class="topbar">
     <button class="burger-btn" id="burgerBtn">☰</button>
     <h1 class="page-title" id="pageTitle">Questionnaires d'intervention</h1>
@@ -112,68 +61,47 @@
 
         <!-- ======== INTÉRIEUR ======== -->
         <div class="panel active" id="panel-interieur">
+
+          <!-- NOUVEAU : Maison ou appartement -->
           <div class="form-card">
-            <div class="form-card-header">0️⃣ Type de logement</div>
+            <div class="form-card-header">🏠 Type de logement</div>
             <div class="form-card-body">
               <div class="check-group">
-                <label class="check-label">Etes-vous en maison ou en appartement ?</label>
+                <label class="check-label">Êtes-vous en maison ou en appartement ?</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="type_logement" value="maison" class="triggers-logement" data-target="maison_options"/> Maison</label>
-                  <label class="checkbox-item"><input type="checkbox" name="type_logement" value="appartement" class="triggers-logement" data-target="appartement_options"/> Appartement</label>
+                  <label class="checkbox-item"><input type="radio" name="int_logement" value="appartement" id="int_log_appart"/> Appartement</label>
+                  <label class="checkbox-item"><input type="radio" name="int_logement" value="maison" id="int_log_maison"/> Maison</label>
                 </div>
               </div>
-              
-              <div class="preciser-field" id="appartement_options">
+
+              <!-- Si appartement -->
+              <div class="cond-block" id="int_appart_block">
                 <div class="check-group">
                   <label class="check-label">Avez-vous prévenu votre syndic ?</label>
                   <div class="checks-row">
-                    <label class="checkbox-item"><input type="checkbox" name="syndic_prevenu" value="oui"/> Oui</label>
-                    <label class="checkbox-item"><input type="checkbox" name="syndic_prevenu" value="non"/> Non</label>
+                    <label class="checkbox-item"><input type="checkbox" name="int_syndic_prevenu" value="oui"/> Oui</label>
+                    <label class="checkbox-item"><input type="checkbox" name="int_syndic_prevenu" value="non"/> Non</label>
                   </div>
                 </div>
                 <div class="field-group">
-                  <label>Quel est le nom de votre syndic :</label>
-                  <input type="text" name="nom_syndic" placeholder="Nom du syndic" />
+                  <label>Nom du syndic</label>
+                  <input type="text" name="int_syndic_nom" placeholder="Nom du syndic…" />
                 </div>
               </div>
-              
-              <div class="preciser-field" id="maison_options">
+
+              <!-- Si maison -->
+              <div class="cond-block" id="int_maison_block">
                 <div class="check-group">
                   <label class="check-label">Type de maison :</label>
                   <div class="checks-row">
-                    <label class="checkbox-item"><input type="checkbox" name="type_maison" value="individuelle"/> Maison individuelle</label>
-                    <label class="checkbox-item"><input type="checkbox" name="type_maison" value="mitoyenne"/> Maison mitoyenne</label>
+                    <label class="checkbox-item"><input type="radio" name="int_maison_type" value="individuelle"/> Maison individuelle</label>
+                    <label class="checkbox-item"><input type="radio" name="int_maison_type" value="mitoyenne"/> Maison mitoyenne</label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="form-card">
-            <div class="form-card-header">👥 Gestion des sinistrés</div>
-            <div class="form-card-body">
-              <div class="check-group">
-                <label class="check-label">Plusieurs sinistrés concernés ?</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="plusieurs_sinistres" value="oui" class="triggers-preciser" data-target="sinistres_details_wrap"/> Oui</label>
-                  <label class="checkbox-item"><input type="checkbox" name="plusieurs_sinistres" value="non"/> Non</label>
-                </div>
-              </div>
-              
-              <div class="preciser-field" id="sinistres_details_wrap">
-                <div class="field-group">
-                  <label>Nom et étage des sinistrés</label>
-                  <textarea name="sinistres_details" rows="4" placeholder="Ex :
-- M. Dupont - 2ème étage - Infiltration salle de bain
-- Mme Martin - 3ème étage - Plafond chambre
-- M. Leroy - 2ème étage - Mur salon"></textarea>
-                </div>
-                <div class="field-group">
-                  <label>Précisions sur les sinistres de chaque personne</label>
-                  <textarea name="sinistres_precisions" rows="3" placeholder="Détails supplémentaires sur les sinistres de chaque sinistré..."></textarea>
-                </div>
-              </div>
-            </div>
-          </div>
+
           <div class="form-card">
             <div class="form-card-header">1️⃣ Origine du sinistre</div>
             <div class="form-card-body">
@@ -221,6 +149,7 @@
               </div>
             </div>
           </div>
+
           <div class="form-card">
             <div class="form-card-header">2️⃣ Localisation du sinistre</div>
             <div class="form-card-body">
@@ -265,6 +194,7 @@
               </div>
             </div>
           </div>
+
           <div class="form-card">
             <div class="form-card-header">3️⃣ Environnement</div>
             <div class="form-card-body">
@@ -310,6 +240,7 @@
               </div>
             </div>
           </div>
+
           <div class="form-card">
             <div class="form-card-header">4️⃣ Humidité / Indices</div>
             <div class="form-card-body">
@@ -344,6 +275,7 @@
               </div>
             </div>
           </div>
+
           <div class="form-card">
             <div class="form-card-header">5️⃣ Installations / Travaux</div>
             <div class="form-card-body">
@@ -388,8 +320,21 @@
               </div>
             </div>
           </div>
+
+          <!-- NOUVEAU : Multi-sinistrés -->
           <div class="form-card">
-            <div class="form-card-header">6️⃣ Personnes &amp; Accès</div>
+            <div class="form-card-header">6️⃣ Sinistrés concernés</div>
+            <div class="form-card-body">
+              <p style="font-size:9pt;color:#555e7a;margin-bottom:12px;">Renseignez chaque sinistré (nom, étage, sinistre constaté, pièces touchées). Ajoutez autant de sinistrés que nécessaire.</p>
+              <div class="sinistre-list" id="sinistreList">
+                <!-- Items injectés dynamiquement -->
+              </div>
+              <button type="button" class="add-sinistre-btn" id="addSinistreBtn">+ Ajouter un sinistré</button>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-card-header">7️⃣ Personnes &amp; Accès</div>
             <div class="form-card-body">
               <div class="field-row">
                 <div class="field-group">
@@ -437,15 +382,15 @@
               </div>
             </div>
           </div>
-          <div class="form-card">
-            <div class="form-card-header">💬 Commentaires</div>
-            <div class="form-card-body">
-              <div class="field-group">
-                <label>Commentaires de l'opératrice</label>
-                <textarea name="commentaires" rows="4" placeholder="Informations complémentaires fournies par le client, notes importantes..."></textarea>
-              </div>
+
+          <!-- Commentaires opératrice -->
+          <div class="commentaires-card form-card">
+            <div class="form-card-header">💬 Commentaires opératrice</div>
+            <div class="form-card-body" style="padding:0">
+              <textarea name="int_commentaires" placeholder="Informations complémentaires données par le client…" style="width:100%;padding:12px;border:none;background:transparent;font-size:9.5pt;color:#1a1e2e;resize:vertical;min-height:90px;outline:none;"></textarea>
             </div>
           </div>
+
         </div><!-- /panel-interieur -->
 
         <!-- ======== PISCINE ======== -->
@@ -716,21 +661,19 @@
               </div>
             </div>
           </div>
-          <div class="form-card">
-            <div class="form-card-header">💬 Commentaires</div>
-            <div class="form-card-body">
-              <div class="field-group">
-                <label>Commentaires de l'opératrice</label>
-                <textarea name="p_commentaires" rows="4" placeholder="Informations complémentaires fournies par le client, notes importantes..."></textarea>
-              </div>
+
+          <!-- Commentaires opératrice -->
+          <div class="commentaires-card form-card">
+            <div class="form-card-header">💬 Commentaires opératrice</div>
+            <div class="form-card-body" style="padding:0">
+              <textarea name="p_commentaires" placeholder="Informations complémentaires données par le client…" style="width:100%;padding:12px;border:none;background:transparent;font-size:9.5pt;color:#1a1e2e;resize:vertical;min-height:90px;outline:none;"></textarea>
             </div>
           </div>
+
         </div><!-- /panel-piscine -->
 
         <!-- ======== TOITURE ======== -->
         <div class="panel" id="panel-toiture">
-
-          <!-- SECTION 1 — ORIGINE -->
           <div class="form-card">
             <div class="form-card-header">1️⃣ Origine du problème</div>
             <div class="form-card-body">
@@ -814,7 +757,6 @@
             </div>
           </div>
 
-          <!-- MODULE A — TOIT PLAT -->
           <div class="form-card">
             <div class="form-card-header">🧱 Module A — Toit plat <span style="font-weight:400;font-size:8.5pt;opacity:.7">(à compléter si toit plat)</span></div>
             <div class="form-card-body">
@@ -863,7 +805,6 @@
                   <label class="checkbox-item"><input type="checkbox" name="t_a_age" value="inconnu"/> Inconnu</label>
                 </div>
               </div>
-
               <div class="module-label" style="margin-top:14px">A2 · Équipements de sécurité &amp; Accès — Toit plat</div>
               <div class="check-group">
                 <label class="check-label">Présence de garde-corps périphériques :</label>
@@ -913,7 +854,6 @@
             </div>
           </div>
 
-          <!-- MODULE B — TOIT EN PENTE -->
           <div class="form-card">
             <div class="form-card-header">🏠 Module B — Toit en pente <span style="font-weight:400;font-size:8.5pt;opacity:.7">(à compléter si toit en pente)</span></div>
             <div class="form-card-body">
@@ -965,7 +905,6 @@
                   <label class="checkbox-item"><input type="checkbox" name="t_b_age" value="inconnu"/> Inconnu</label>
                 </div>
               </div>
-
               <div class="module-label" style="margin-top:14px">B2 · Équipements de sécurité &amp; Accès — Toit en pente</div>
               <div class="check-group">
                 <label class="check-label">Présence de dispositifs antichute :</label>
@@ -1001,13 +940,12 @@
               </div>
             </div>
           </div>
-          <div class="form-card">
-            <div class="form-card-header">💬 Commentaires</div>
-            <div class="form-card-body">
-              <div class="field-group">
-                <label>Commentaires de l'opératrice</label>
-                <textarea name="t_commentaires" rows="4" placeholder="Informations complémentaires fournies par le client, notes importantes..."></textarea>
-              </div>
+
+          <!-- Commentaires opératrice -->
+          <div class="commentaires-card form-card">
+            <div class="form-card-header">💬 Commentaires opératrice</div>
+            <div class="form-card-body" style="padding:0">
+              <textarea name="t_commentaires" placeholder="Informations complémentaires données par le client…" style="width:100%;padding:12px;border:none;background:transparent;font-size:9.5pt;color:#1a1e2e;resize:vertical;min-height:90px;outline:none;"></textarea>
             </div>
           </div>
 
@@ -1015,34 +953,37 @@
 
         <!-- ======== EXTÉRIEUR ======== -->
         <div class="panel" id="panel-exterieur">
+
+          <!-- NOUVEAU : Maison ou appartement -->
           <div class="form-card">
-            <div class="form-card-header">0️⃣ Type de logement</div>
+            <div class="form-card-header">🏠 Type de logement</div>
             <div class="form-card-body">
               <div class="check-group">
-                <label class="check-label">Etes vous en maison ou en appartement ?</label>
+                <label class="check-label">Êtes-vous en maison ou en appartement ?</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="e_type_logement" value="maison" class="triggers-logement" data-target="e_maison_options"/> Maison</label>
-                  <label class="checkbox-item"><input type="checkbox" name="e_type_logement" value="appartement" class="triggers-logement" data-target="e_appartement_options"/> Appartement</label>
+                  <label class="checkbox-item"><input type="radio" name="ext_logement" value="appartement" id="ext_log_appart"/> Appartement</label>
+                  <label class="checkbox-item"><input type="radio" name="ext_logement" value="maison" id="ext_log_maison"/> Maison</label>
                 </div>
               </div>
-              
-              <div class="preciser-field" id="e_appartement_options">
-                <div class="alert-box" style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px; padding: 12px; margin-bottom: 12px;">
-                  <p style="margin: 0; color: #856404; font-weight: 600;">⚠️ Si appartement : REMPLIR questionnaire « intérieur »</p>
-                </div>
+
+              <!-- Si appartement : redirection vers questionnaire intérieur -->
+              <div class="alert-redirect" id="ext_appart_redirect">
+                ⚠️ En cas de surconsommation d'eau en appartement, merci de <strong>remplir le questionnaire « Intérieur »</strong> à la place.
               </div>
-              
-              <div class="preciser-field" id="e_maison_options">
+
+              <!-- Si maison -->
+              <div class="cond-block" id="ext_maison_block">
                 <div class="check-group">
                   <label class="check-label">Type de maison :</label>
                   <div class="checks-row">
-                    <label class="checkbox-item"><input type="checkbox" name="e_type_maison" value="individuelle"/> Individuelle</label>
-                    <label class="checkbox-item"><input type="checkbox" name="e_type_maison" value="mitoyenne"/> Mitoyenne</label>
+                    <label class="checkbox-item"><input type="radio" name="ext_maison_type" value="individuelle"/> Maison individuelle</label>
+                    <label class="checkbox-item"><input type="radio" name="ext_maison_type" value="mitoyenne"/> Maison mitoyenne</label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
           <div class="form-card">
             <div class="form-card-header">1️⃣ Origine du problème</div>
             <div class="form-card-body">
@@ -1281,15 +1222,15 @@
               </div>
             </div>
           </div>
-          <div class="form-card">
-            <div class="form-card-header">💬 Commentaires</div>
-            <div class="form-card-body">
-              <div class="field-group">
-                <label>Commentaires de l'opératrice</label>
-                <textarea name="e_commentaires" rows="4" placeholder="Informations complémentaires fournies par le client, notes importantes..."></textarea>
-              </div>
+
+          <!-- Commentaires opératrice -->
+          <div class="commentaires-card form-card">
+            <div class="form-card-header">💬 Commentaires opératrice</div>
+            <div class="form-card-body" style="padding:0">
+              <textarea name="e_commentaires" placeholder="Informations complémentaires données par le client…" style="width:100%;padding:12px;border:none;background:transparent;font-size:9.5pt;color:#1a1e2e;resize:vertical;min-height:90px;outline:none;"></textarea>
             </div>
           </div>
+
         </div><!-- /panel-exterieur -->
 
         <div class="form-actions">
@@ -1356,7 +1297,6 @@
 // ==================== SUPABASE ====================
 const SUPABASE_URL  = 'https://hrolvvpkpshefljlfljb.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhyb2x2dnBrcHNoZWZsamxmbGpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzAwMTgsImV4cCI6MjA4OTM0NjAxOH0.h2n0u7mdiHRLqp8PpshS__9OXprkqnbYq6vuCAR_TFg';
-
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 // ==================== DB ====================
@@ -1368,66 +1308,104 @@ async function dbAdd(formData) {
   if (error) throw error;
   return data.id;
 }
-
 async function dbGetAll() {
   const { data, error } = await sb.from('rapports').select('*').order('created_at', { ascending: false });
   if (error) throw error;
   return data.map(flattenRow);
 }
-
 async function dbGet(id) {
   const { data, error } = await sb.from('rapports').select('*').eq('id', id).single();
   if (error) throw error;
   return flattenRow(data);
 }
-
 async function dbDelete(id) {
   const { error } = await sb.from('rapports').delete().eq('id', id);
   if (error) throw error;
 }
-
 function flattenRow(row) {
   if (!row) return null;
   return { id: row.id, refRapport: row.ref_rapport, type: row.type, createdAt: row.created_at, ...(row.data || {}) };
 }
 
-// ==================== PRÉCISER SI AUTRE & LOGEMENT ====================
+// ==================== PRÉCISER SI AUTRE ====================
 document.addEventListener('change', function(e) {
-  // Gestion des champs "préciser si autre"
   if (e.target.classList.contains('triggers-preciser')) {
     const targetId = e.target.dataset.target;
     const wrap = document.getElementById(targetId);
     if (!wrap) return;
-    const anyChecked = document.querySelectorAll(
-      '.triggers-preciser[data-target="' + targetId + '"]:checked'
-    ).length > 0;
+    const anyChecked = document.querySelectorAll('.triggers-preciser[data-target="' + targetId + '"]:checked').length > 0;
     wrap.classList.toggle('visible', anyChecked);
-    if (!anyChecked) {
-      const input = wrap.querySelector('input');
-      if (input) input.value = '';
-    }
+    if (!anyChecked) { const inp = wrap.querySelector('input'); if (inp) inp.value = ''; }
   }
-  
-  // Gestion des sections logement (maison/appartement)
-  if (e.target.classList.contains('triggers-logement')) {
-    const targetId = e.target.dataset.target;
-    const wrap = document.getElementById(targetId);
-    if (!wrap) return;
-    const isChecked = e.target.checked;
-    wrap.classList.toggle('visible', isChecked);
-    
-    // Si on décoche, vider les champs
-    if (!isChecked) {
-      const inputs = wrap.querySelectorAll('input[type="checkbox"], input[type="text"], textarea');
-      inputs.forEach(input => {
-        if (input.type === 'checkbox') {
-          input.checked = false;
-        } else {
-          input.value = '';
-        }
-      });
-    }
-  }
+});
+
+// ==================== LOGEMENT CONDITIONNEL (INTÉRIEUR) ====================
+document.querySelectorAll('input[name="int_logement"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    const v = this.value;
+    document.getElementById('int_appart_block').classList.toggle('visible', v === 'appartement');
+    document.getElementById('int_maison_block').classList.toggle('visible', v === 'maison');
+  });
+});
+
+// ==================== LOGEMENT CONDITIONNEL (EXTÉRIEUR) ====================
+document.querySelectorAll('input[name="ext_logement"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    const v = this.value;
+    document.getElementById('ext_appart_redirect').classList.toggle('visible', v === 'appartement');
+    document.getElementById('ext_maison_block').classList.toggle('visible', v === 'maison');
+  });
+});
+
+// ==================== MULTI-SINISTRÉS ====================
+let sinistreCount = 0;
+
+function createSinistreItem() {
+  sinistreCount++;
+  const idx = sinistreCount;
+  const div = document.createElement('div');
+  div.className = 'sinistre-item';
+  div.dataset.idx = idx;
+  div.innerHTML = `
+    <div class="sinistre-item-header">
+      <span class="sinistre-item-title">Sinistré n° ${idx}</span>
+      <button type="button" class="sinistre-remove-btn" onclick="removeSinistre(this)">Supprimer</button>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>Nom / prénom</label>
+        <input type="text" name="sinistre_${idx}_nom" placeholder="Ex : M. Dupont" />
+      </div>
+      <div class="field-group">
+        <label>Étage / appartement</label>
+        <input type="text" name="sinistre_${idx}_etage" placeholder="Ex : 3ème, Apt 12" />
+      </div>
+    </div>
+    <div class="field-group">
+      <label>Sinistre constaté</label>
+      <input type="text" name="sinistre_${idx}_sinistre" placeholder="Ex : Tache au plafond, dégât des eaux…" />
+    </div>
+    <div class="field-group">
+      <label>Pièces touchées</label>
+      <input type="text" name="sinistre_${idx}_pieces" placeholder="Ex : Salon, chambre, couloir…" />
+    </div>
+    <div class="field-group">
+      <label>Téléphone</label>
+      <input type="tel" name="sinistre_${idx}_tel" placeholder="Numéro de contact" />
+    </div>
+  `;
+  return div;
+}
+
+function removeSinistre(btn) {
+  btn.closest('.sinistre-item').remove();
+}
+
+// Ajouter un premier sinistré par défaut
+document.getElementById('sinistreList').appendChild(createSinistreItem());
+
+document.getElementById('addSinistreBtn').addEventListener('click', function() {
+  document.getElementById('sinistreList').appendChild(createSinistreItem());
 });
 
 // ==================== NAVIGATION ====================
@@ -1436,7 +1414,6 @@ const views     = document.querySelectorAll('.view');
 const sidebar   = document.getElementById('sidebar');
 const burgerBtn = document.getElementById('burgerBtn');
 const pageTitle = document.getElementById('pageTitle');
-
 const TITLES = { nouveau: 'Nouveau questionnaire', liste: 'Tous les questionnaires' };
 
 function showView(name) {
@@ -1454,7 +1431,6 @@ navItems.forEach(n => n.addEventListener('click', e => {
 }));
 
 burgerBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
-
 document.addEventListener('click', e => {
   if (window.innerWidth <= 768 && !sidebar.contains(e.target) && e.target !== burgerBtn)
     sidebar.classList.remove('open');
@@ -1472,10 +1448,35 @@ document.querySelectorAll('.type-btn').forEach(btn => {
 });
 
 // ==================== COLLECT FORM ====================
+function collectSinistrés() {
+  const list = document.getElementById('sinistreList');
+  const items = list.querySelectorAll('.sinistre-item');
+  const result = [];
+  items.forEach(item => {
+    const idx = item.dataset.idx;
+    result.push({
+      nom: (item.querySelector('[name="sinistre_' + idx + '_nom"]') || {}).value || '',
+      etage: (item.querySelector('[name="sinistre_' + idx + '_etage"]') || {}).value || '',
+      sinistre: (item.querySelector('[name="sinistre_' + idx + '_sinistre"]') || {}).value || '',
+      pieces: (item.querySelector('[name="sinistre_' + idx + '_pieces"]') || {}).value || '',
+      tel: (item.querySelector('[name="sinistre_' + idx + '_tel"]') || {}).value || ''
+    });
+  });
+  return result;
+}
+
 function collectForm() {
   const form = document.getElementById('mainForm');
   const data = { type: currentType };
   data.refRapport = (document.getElementById('refRapport').value || '').trim();
+
+  // Radios
+  ['int_logement','int_maison_type','ext_logement','ext_maison_type'].forEach(name => {
+    const checked = form.querySelector('input[name="' + name + '"]:checked');
+    if (checked) data[name] = checked.value;
+  });
+
+  // Checkboxes
   const groups = {};
   form.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     if (!cb.name) return;
@@ -1483,20 +1484,36 @@ function collectForm() {
     if (cb.checked) groups[cb.name].push(cb.value);
   });
   Object.assign(data, groups);
+
+  // Text/number/tel/textarea
   form.querySelectorAll('input[type="text"], input[type="number"], input[type="tel"], textarea').forEach(el => {
-    if (el.name) data[el.name] = el.value.trim();
+    if (el.name && !el.name.startsWith('sinistre_')) data[el.name] = el.value.trim();
   });
+
+  // Sinistrés (intérieur uniquement)
+  if (currentType === 'interieur') {
+    data.sinistrés = collectSinistrés();
+  }
+
   data.createdAt = new Date().toISOString();
   return data;
+}
+
+function resetSinistrés() {
+  const list = document.getElementById('sinistreList');
+  list.innerHTML = '';
+  sinistreCount = 0;
+  list.appendChild(createSinistreItem());
 }
 
 function resetForm() {
   document.getElementById('mainForm').reset();
   document.querySelectorAll('.preciser-field').forEach(f => {
     f.classList.remove('visible');
-    const input = f.querySelector('input');
-    if (input) input.value = '';
+    const inp = f.querySelector('input'); if (inp) inp.value = '';
   });
+  document.querySelectorAll('.cond-block, .alert-redirect').forEach(b => b.classList.remove('visible'));
+  resetSinistrés();
 }
 
 // ==================== ENREGISTRER ====================
@@ -1504,8 +1521,7 @@ document.getElementById('saveReportBtn').addEventListener('click', async () => {
   const data = collectForm();
   if (!data.refRapport) { showToast("Renseignez le numéro de dossier avant d'enregistrer.", 'error'); return; }
   const btn = document.getElementById('saveReportBtn');
-  btn.disabled = true;
-  btn.textContent = 'Enregistrement…';
+  btn.disabled = true; btn.textContent = 'Enregistrement…';
   try {
     await dbAdd(data);
     showToast('Questionnaire enregistré !', 'success');
@@ -1515,8 +1531,7 @@ document.getElementById('saveReportBtn').addEventListener('click', async () => {
     showToast('Erreur : ' + (e.message || JSON.stringify(e)), 'error');
     console.error(e);
   } finally {
-    btn.disabled = false;
-    btn.textContent = '✦ Enregistrer le questionnaire';
+    btn.disabled = false; btn.textContent = '✦ Enregistrer le questionnaire';
   }
 });
 
@@ -1549,7 +1564,7 @@ document.getElementById('searchInput').addEventListener('input', () => renderTab
 async function renderTable(filter) {
   try {
     const all = await dbGetAll();
-    const q   = document.getElementById('searchInput').value.toLowerCase();
+    const q = document.getElementById('searchInput').value.toLowerCase();
     const rows = all.filter(r => {
       if (filter !== 'all' && r.type !== filter) return false;
       if (q) {
@@ -1573,7 +1588,7 @@ async function renderTable(filter) {
         <td>
           <div class="table-actions">
             <button class="action-btn pdf-btn" data-id="${r.id}">⬇ PDF</button>
-            <button class="action-btn del"     data-id="${r.id}">✕</button>
+            <button class="action-btn del" data-id="${r.id}">✕</button>
           </div>
         </td>
       </tr>`).join('');
@@ -1588,8 +1603,7 @@ async function renderTable(filter) {
             await dbDelete(id);
             document.getElementById('modalOverlay').classList.remove('open');
             showToast('Questionnaire supprimé.', 'success');
-            renderTable(currentFilter);
-            updateCount();
+            renderTable(currentFilter); updateCount();
           } catch(e) { showToast('Erreur : ' + (e.message || e), 'error'); }
         };
       });
@@ -1628,20 +1642,32 @@ function printReportHTML(r) {
     if (!base) return '';
     return autreVal && base.includes('autre') ? base + ' — ' + autreVal : base;
   }
+  function sinistresSec(list) {
+    if (!list || !list.length) return '';
+    let html = '<div class="sec"><div class="sec-title">Sinistrés concernés</div>';
+    list.forEach((s, i) => {
+      if (!s.nom && !s.sinistre) return;
+      html += `<div style="margin:6px 0 2px;font-weight:700;font-size:8.5pt;color:#2a3963;padding:4px 8px;background:#eef0f6">Sinistré n° ${i+1}</div>`;
+      html += '<table>';
+      if (s.nom) html += `<tr><td class="lbl">Nom</td><td>${s.nom}</td></tr>`;
+      if (s.etage) html += `<tr><td class="lbl">Étage / Apt</td><td>${s.etage}</td></tr>`;
+      if (s.sinistre) html += `<tr><td class="lbl">Sinistre</td><td>${s.sinistre}</td></tr>`;
+      if (s.pieces) html += `<tr><td class="lbl">Pièces</td><td>${s.pieces}</td></tr>`;
+      if (s.tel) html += `<tr><td class="lbl">Téléphone</td><td>${s.tel}</td></tr>`;
+      html += '</table>';
+    });
+    html += '</div>';
+    return html;
+  }
 
   let corps = '';
 
   if (r.type === 'interieur') {
-    corps += sec('0. Type de logement', [
-      ['Type de logement', r.type_logement],
-      ['Syndic prévenu', r.syndic_prevenu],
-      ['Nom du syndic', r.nom_syndic],
-      ['Type de maison', r.type_maison]
-    ]);
-    corps += sec('Gestion des sinistrés', [
-      ['Plusieurs sinistrés', r.plusieurs_sinistres],
-      ['Détails sinistrés', r.sinistres_details],
-      ['Précisions sinistres', r.sinistres_precisions]
+    corps += sec('Type de logement', [
+      ['Logement', r.int_logement],
+      ['Syndic prévenu', val(r.int_syndic_prevenu)],
+      ['Nom du syndic', r.int_syndic_nom],
+      ['Type maison', r.int_maison_type]
     ]);
     corps += sec('1. Origine du sinistre', [
       ['Ancienneté', withAutre(r.anciennete, r.anciennete_autre)],
@@ -1672,12 +1698,13 @@ function printReportHTML(r) {
       ['Travaux', r.travaux],
       ['Nature travaux', withAutre(r.travaux_nature, r.travaux_nature_autre)]
     ]);
-    corps += sec('6. Personnes & Accès', [
+    corps += sinistresSec(r['sinistrés']);
+    corps += sec('7. Personnes & Accès', [
       ['Personne', r.personne],['Téléphone', r.telephone],
       ['Interlocuteur', r.interlocuteur],['Coordonnées diff.', r.coordonnees_diff],
       ['Accès', r.acces],['Stationnement', r.stationnement],['Contraintes', r.contraintes]
     ]);
-    corps += sec('Commentaires', [['Commentaires opératrice', r.commentaires]]);
+    corps += sec('Commentaires opératrice', [['', r.int_commentaires]]);
   }
 
   if (r.type === 'piscine') {
@@ -1719,7 +1746,7 @@ function printReportHTML(r) {
       ['Interlocuteur', r.p_interlocuteur],['Coordonnées diff.', r.p_coordonnees_diff],
       ['Accès', r.p_acces],['Stationnement', r.p_stationnement],['Contraintes', r.p_contraintes]
     ]);
-    corps += sec('Commentaires', [['Commentaires opératrice', r.p_commentaires]]);
+    corps += sec('Commentaires opératrice', [['', r.p_commentaires]]);
   }
 
   if (r.type === 'toiture') {
@@ -1766,13 +1793,13 @@ function printReportHTML(r) {
       ["Qui donne l'accès", r.t_b_qui_acces],
       ['Stationnement', r.t_b_stationnement]
     ]);
-    corps += sec('Commentaires', [['Commentaires opératrice', r.t_commentaires]]);
+    corps += sec('Commentaires opératrice', [['', r.t_commentaires]]);
   }
 
   if (r.type === 'exterieur') {
-    corps += sec('0. Type de logement', [
-      ['Type de logement', r.e_type_logement],
-      ['Type de maison', r.e_type_maison]
+    corps += sec('Type de logement', [
+      ['Logement', r.ext_logement],
+      ['Type maison', r.ext_maison_type]
     ]);
     corps += sec('1. Origine', [
       ['Ancienneté', withAutre(r.e_anciennete, r.e_anciennete_autre)],
@@ -1802,7 +1829,7 @@ function printReportHTML(r) {
       ['Interlocuteur', r.e_interlocuteur],['Accès', r.e_acces],
       ['Stationnement', r.e_stationnement],['Contraintes', r.e_contraintes]
     ]);
-    corps += sec('Commentaires', [['Commentaires opératrice', r.e_commentaires]]);
+    corps += sec('Commentaires opératrice', [['', r.e_commentaires]]);
   }
 
   const C = '#2a3963', A = '#b0ca60';
@@ -1810,7 +1837,7 @@ function printReportHTML(r) {
 <title>Dossier ${r.refRapport||r.id}</title>
 <style>
   @page{size:A4;margin:14mm 13mm 18mm}*{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Lato',Arial,sans-serif;font-size:9.5pt;color:#1a1e2e}
+  body{font-family:'Segoe UI',Arial,sans-serif;font-size:9.5pt;color:#1a1e2e}
   .header{border-left:5px solid ${A};padding:10px 14px;margin-bottom:18px;background:#f4f6fa}
   .header .os{font-size:20pt;font-weight:900;color:${C}}.header .os span{color:${A}}
   .badge{display:inline-block;background:${C};color:#fff;font-weight:700;font-size:8.5pt;text-transform:uppercase;letter-spacing:.06em;padding:3px 12px;border-radius:4px;margin-top:5px}
