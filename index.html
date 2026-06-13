@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SOS Fuite d'Eau — Questionnaires d'Intervention</title>
   <style>
-    /* ===== RESET & BASE ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 14px; }
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef0f6; color: #1a1e2e; min-height: 100vh; display: flex; }
 
-    /* ===== SIDEBAR ===== */
     .sidebar { width: 220px; background: #1a1e2e; display: flex; flex-direction: column; min-height: 100vh; position: fixed; top: 0; left: 0; z-index: 200; transition: transform .25s; }
     .sidebar-logo { padding: 22px 18px 16px; border-bottom: 1px solid #2a3963; }
     .logo-text { font-weight: 900; font-size: 13pt; color: #b0ca60; letter-spacing: .02em; }
@@ -23,20 +21,16 @@
     .sidebar-footer { padding: 14px 18px; border-top: 1px solid #2a3963; }
     .version-tag { font-size: 7.5pt; color: #555e7a; }
 
-    /* ===== MAIN ===== */
     .main-content { margin-left: 220px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* ===== TOPBAR ===== */
     .topbar { background: #fff; border-bottom: 1px solid #dde3f0; display: flex; align-items: center; gap: 14px; padding: 0 28px; height: 54px; position: sticky; top: 0; z-index: 100; }
     .burger-btn { display: none; background: none; border: none; font-size: 18pt; cursor: pointer; color: #2a3963; }
     .page-title { font-size: 13pt; font-weight: 800; color: #2a3963; flex: 1; }
     .badge-count { font-size: 8pt; background: #eef0f6; color: #555e7a; padding: 4px 10px; border-radius: 20px; font-weight: 700; }
 
-    /* ===== VIEWS ===== */
     .view { display: none; padding: 26px 28px; flex: 1; }
     .view.active { display: block; }
 
-    /* ===== FORM ===== */
     .form-container { max-width: 820px; }
     .section-title { font-size: 11pt; font-weight: 800; color: #2a3963; margin-bottom: 12px; }
     .type-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
@@ -52,6 +46,7 @@
     .field-group input[type="text"],
     .field-group input[type="number"],
     .field-group input[type="tel"],
+    .field-group input[type="email"],
     .field-group textarea { width: 100%; padding: 8px 11px; border: 1px solid #d0d7e8; border-radius: 5px; font-size: 9.5pt; color: #1a1e2e; background: #f9fafd; }
     .field-group textarea { resize: vertical; }
     .field-row { display: flex; gap: 14px; }
@@ -62,6 +57,11 @@
     .checkbox-item { display: flex; align-items: center; gap: 5px; font-size: 9.5pt; cursor: pointer; }
     .checkbox-item input[type="checkbox"] { accent-color: #2a3963; width: 14px; height: 14px; }
 
+    /* Champ dégâts (nouveau) */
+    .degats-card { background: #fff; border: 1px solid #dde3f0; border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+    .degats-card .form-card-header { background: #3d5a8a; color: #fff; }
+    .degats-card textarea { width: 100%; padding: 12px; border: none; background: transparent; font-size: 9.5pt; color: #1a1e2e; resize: vertical; min-height: 80px; outline: none; }
+
     /* Préciser si autre */
     .preciser-field { display: none; margin-top: 6px; }
     .preciser-field.visible { display: block; }
@@ -70,6 +70,10 @@
     /* Conditional blocks */
     .cond-block { display: none; margin-top: 10px; padding: 12px; background: #f4f6fa; border-radius: 6px; border-left: 3px solid #b0ca60; }
     .cond-block.visible { display: block; }
+
+    /* Cascade blocks (imbriqués) */
+    .cascade-block { display: none; margin-top: 8px; padding: 10px 12px; background: #eef4ff; border-radius: 5px; border-left: 3px solid #5b83c4; }
+    .cascade-block.visible { display: block; }
 
     /* Alert / redirect box */
     .alert-redirect { background: #fff3cd; border: 1px solid #e0a800; border-radius: 6px; padding: 12px 16px; font-weight: 700; font-size: 9.5pt; color: #7a5800; margin-top: 10px; display: none; }
@@ -82,6 +86,10 @@
     .sinistre-item-title { font-weight: 700; font-size: 9pt; color: #2a3963; }
     .sinistre-remove-btn { background: #e74c3c; color: #fff; border: none; border-radius: 4px; padding: 3px 9px; font-size: 8pt; cursor: pointer; font-weight: 700; }
     .add-sinistre-btn { background: #2a3963; color: #b0ca60; border: none; border-radius: 6px; padding: 8px 16px; font-weight: 700; font-size: 9pt; cursor: pointer; margin-top: 6px; display: inline-block; }
+
+    /* Sinistrant (nouveau — card distincte) */
+    .sinistrant-card { background: #fff8e1; border: 1px solid #f9ca24; border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+    .sinistrant-card .form-card-header { background: #e8a800; color: #1a1e2e; }
 
     /* Équipements piscine */
     .equip-grid { display: flex; flex-wrap: wrap; gap: 8px 20px; }
@@ -100,7 +108,7 @@
     .btn-primary:disabled { opacity: .6; cursor: not-allowed; }
     .btn-secondary { background: #f4f6fa; color: #555; border: 1px solid #d0d7e8; border-radius: 6px; padding: 11px 20px; font-weight: 700; font-size: 10pt; cursor: pointer; }
 
-    /* ===== LIST ===== */
+    /* LIST */
     .list-toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 18px; }
     .search-input { flex: 1; min-width: 200px; padding: 9px 13px; border: 1px solid #d0d7e8; border-radius: 6px; font-size: 9.5pt; background: #fff; }
     .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -124,13 +132,11 @@
     .action-btn.pdf-btn { background: #2a3963; color: #b0ca60; }
     .action-btn.del { background: #fde; color: #c0392b; }
 
-    /* ===== TOAST ===== */
     .toast { position: fixed; bottom: 24px; right: 24px; background: #2a3963; color: #fff; padding: 12px 22px; border-radius: 8px; font-size: 9.5pt; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 9999; }
     .toast.show { opacity: 1; }
     .toast.success { background: #27ae60; }
     .toast.error { background: #c0392b; }
 
-    /* ===== MODAL ===== */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 500; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
     .modal { background: #fff; border-radius: 10px; padding: 28px 32px; width: 340px; box-shadow: 0 8px 40px rgba(0,0,0,.18); }
@@ -139,10 +145,8 @@
     .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
     .btn-danger { background: #c0392b; color: #fff; border: none; border-radius: 6px; padding: 9px 18px; font-weight: 700; font-size: 9.5pt; cursor: pointer; }
 
-    /* ===== MODULE LABEL ===== */
     .module-label { font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #888; margin-bottom: 10px; }
 
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); }
@@ -155,7 +159,6 @@
 </head>
 <body>
 
-<!-- ===== SIDEBAR ===== -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <span class="logo-text">SOS Fuite d'Eau</span>
@@ -165,11 +168,10 @@
     <li><a href="#" class="nav-item" data-view="liste"><span class="nav-icon">≡</span> Tous les questionnaires</a></li>
   </ul>
   <div class="sidebar-footer">
-    <div class="version-tag">v1.1 · 2025</div>
+    <div class="version-tag">v1.2 · 2025</div>
   </div>
 </nav>
 
-<!-- ===== MAIN ===== -->
 <main class="main-content" id="mainContent">
 
   <header class="topbar">
@@ -196,12 +198,18 @@
 
       <form id="mainForm" autocomplete="off">
 
-        <div class="form-card">
+        <!-- Infos générales + dégâts (commun à tous sauf Extérieur qui a son propre bloc dégâts) -->
+        <div class="form-card" id="infoGeneralesCard">
           <div class="form-card-header">Informations générales</div>
           <div class="form-card-body">
             <div class="field-group">
               <label>Numéro de dossier</label>
               <input type="text" id="refRapport" placeholder="Ex : 3256" />
+            </div>
+            <!-- NOUVEAU : Dégâts constatés (visible pour tous sauf Extérieur) -->
+            <div id="degatsGlobalWrap" class="field-group" style="margin-top:4px;">
+              <label>Dégâts constatés</label>
+              <textarea name="degats_constates" rows="3" placeholder="Décrivez brièvement les dégâts observés par le client…"></textarea>
             </div>
           </div>
         </div>
@@ -209,7 +217,6 @@
         <!-- ======== INTÉRIEUR ======== -->
         <div class="panel active" id="panel-interieur">
 
-          <!-- NOUVEAU : Maison ou appartement -->
           <div class="form-card">
             <div class="form-card-header">🏠 Type de logement</div>
             <div class="form-card-body">
@@ -220,8 +227,6 @@
                   <label class="checkbox-item"><input type="radio" name="int_logement" value="maison" id="int_log_maison"/> Maison</label>
                 </div>
               </div>
-
-              <!-- Si appartement -->
               <div class="cond-block" id="int_appart_block">
                 <div class="check-group">
                   <label class="check-label">Avez-vous prévenu votre syndic ?</label>
@@ -235,8 +240,6 @@
                   <input type="text" name="int_syndic_nom" placeholder="Nom du syndic…" />
                 </div>
               </div>
-
-              <!-- Si maison -->
               <div class="cond-block" id="int_maison_block">
                 <div class="check-group">
                   <label class="check-label">Type de maison :</label>
@@ -272,28 +275,40 @@
                   <label class="checkbox-item"><input type="checkbox" name="degat_progresse" value="nsp"/> Ne sait pas</label>
                 </div>
               </div>
+
+              <!-- CASCADE 1 : Eau coule → Alim coupée → Fuite s'arrête -->
               <div class="check-group">
                 <label class="check-label">Eau coule actuellement :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="eau_coule" value="oui"/> Oui</label>
-                  <label class="checkbox-item"><input type="checkbox" name="eau_coule" value="non"/> Non</label>
+                  <label class="checkbox-item"><input type="checkbox" name="eau_coule" value="oui" id="eau_coule_oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="eau_coule" value="non" id="eau_coule_non"/> Non</label>
                 </div>
               </div>
-              <div class="check-group">
-                <label class="check-label">Alimentation eau coupée :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="alim_coupee" value="oui"/> Oui</label>
-                  <label class="checkbox-item"><input type="checkbox" name="alim_coupee" value="non"/> Non</label>
+
+              <!-- Niveau 2 : visible seulement si eau coule = oui -->
+              <div class="cascade-block" id="cascade_alim_coupee">
+                <div class="check-group" style="margin-bottom:0">
+                  <label class="check-label">Alimentation eau coupée :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="alim_coupee" value="oui" id="alim_coupee_oui"/> Oui</label>
+                    <label class="checkbox-item"><input type="checkbox" name="alim_coupee" value="non"/> Non</label>
+                  </div>
+                </div>
+
+                <!-- Niveau 3 : visible seulement si alim coupée = oui -->
+                <div class="cascade-block" id="cascade_fuite_arrete" style="margin-top:10px;">
+                  <div class="check-group" style="margin-bottom:0">
+                    <label class="check-label">La fuite s'arrête eau coupée :</label>
+                    <div class="checks-row">
+                      <label class="checkbox-item"><input type="checkbox" name="fuite_arrete" value="oui"/> Oui</label>
+                      <label class="checkbox-item"><input type="checkbox" name="fuite_arrete" value="non"/> Non</label>
+                      <label class="checkbox-item"><input type="checkbox" name="fuite_arrete" value="non_teste"/> Non testé</label>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="check-group">
-                <label class="check-label">La fuite s'arrête eau coupée :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="fuite_arrete" value="oui"/> Oui</label>
-                  <label class="checkbox-item"><input type="checkbox" name="fuite_arrete" value="non"/> Non</label>
-                  <label class="checkbox-item"><input type="checkbox" name="fuite_arrete" value="non_teste"/> Non testé</label>
-                </div>
-              </div>
+              <!-- Fin cascade -->
+
             </div>
           </div>
 
@@ -303,17 +318,85 @@
               <div class="check-group">
                 <label class="check-label">Zone concernée :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="zone_int" value="mur"/> Mur</label>
-                  <label class="checkbox-item"><input type="checkbox" name="zone_int" value="sol"/> Sol</label>
-                  <label class="checkbox-item"><input type="checkbox" name="zone_int" value="plafond"/> Plafond</label>
-                  <label class="checkbox-item"><input type="checkbox" name="zone_int" value="cloison"/> Cloison</label>
+                  <label class="checkbox-item"><input type="checkbox" name="zone_int" value="mur" id="zone_mur"/> Mur</label>
+                                    <label class="checkbox-item"><input type="checkbox" name="zone_int" value="cloison"/> Cloison</label>
+                  <label class="checkbox-item"><input type="checkbox" name="zone_int" value="sol" id="zone_sol"/> Sol</label>
+                  <label class="checkbox-item"><input type="checkbox" name="zone_int" value="plafond" id="zone_plafond"/> Plafond</label>
                   <label class="checkbox-item"><input type="checkbox" name="zone_int" value="autre" class="triggers-preciser" data-target="zone_int_autre_wrap"/> Autre</label>
                 </div>
                 <div class="preciser-field" id="zone_int_autre_wrap">
                   <input type="text" name="zone_int_autre" placeholder="Préciser si autre" />
                 </div>
               </div>
-              <div class="check-group">
+
+              <!-- CASCADE : Mur → Derrière le mur -->
+              <div class="cascade-block" id="cascade_derriere_mur">
+                <div class="check-group" style="margin-bottom:0">
+                  <label class="check-label">Qu'est-ce qu'il y a derrière le mur ?</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="sdb"/> Salle de bain</label>
+                    <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="cuisine"/> Cuisine</label>
+                    <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="colonne"/> Colonne</label>
+                    <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="exterieur"/> Extérieur</label>
+                    <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="autre" class="triggers-preciser" data-target="derriere_mur_autre_wrap"/> Autre</label>
+                  </div>
+                  <div class="preciser-field" id="derriere_mur_autre_wrap">
+                    <input type="text" name="derriere_mur_autre" placeholder="Préciser si autre" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- CASCADE : Sol → En dessous -->
+              <div class="cascade-block" id="cascade_en_dessous">
+                <div class="check-group" style="margin-bottom:0">
+                  <label class="check-label">Qu'est-ce qu'il y a en dessous ?</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="logement"/> Logement</label>
+                    <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="vide_sanitaire"/> Vide sanitaire</label>
+                    <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="local_technique_dessous"/> Local technique</label>
+                    <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="sol"/> Sol</label>
+                    <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="autre" class="triggers-preciser" data-target="en_dessous_autre_wrap"/> Autre</label>
+                  </div>
+                  <div class="preciser-field" id="en_dessous_autre_wrap">
+                    <input type="text" name="en_dessous_autre" placeholder="Préciser si autre" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- CASCADE : Plafond → Au-dessus -->
+              <div class="cascade-block" id="cascade_au_dessus">
+                <div class="check-group" style="margin-bottom:0">
+                  <label class="check-label">Qu'est-ce qu'il y a au-dessus ?</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="terrasse"/> Terrasse</label>
+                    <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="toiture"/> Toiture</label>
+                    <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="logement" id="au_dessus_logement"/> Logement</label>
+                    <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="sdb_wc"/> SDB/WC</label>
+                    <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="cuisine"/> Cuisine</label>
+                    <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="autre" class="triggers-preciser" data-target="au_dessus_autre_wrap"/> Autre</label>
+                  </div>
+                  <div class="preciser-field" id="au_dessus_autre_wrap">
+                    <input type="text" name="au_dessus_autre" placeholder="Préciser si autre" />
+                  </div>
+                  <!-- Niveau 3 : si logement au-dessus → quelle pièce -->
+                  <div class="cascade-block" id="cascade_au_dessus_logement" style="margin-top:10px;">
+                    <div class="check-group" style="margin-bottom:0">
+                      <label class="check-label">Pièce concernée dans le logement au-dessus :</label>
+                      <div class="checks-row">
+                        <label class="checkbox-item"><input type="checkbox" name="au_dessus_logement_piece" value="sdb"/> Salle de bain</label>
+                        <label class="checkbox-item"><input type="checkbox" name="au_dessus_logement_piece" value="cuisine"/> Cuisine</label>
+                        <label class="checkbox-item"><input type="checkbox" name="au_dessus_logement_piece" value="wc"/> WC</label>
+                        <label class="checkbox-item"><input type="checkbox" name="au_dessus_logement_piece" value="autre" class="triggers-preciser" data-target="au_dessus_logement_autre_wrap"/> Autre</label>
+                      </div>
+                      <div class="preciser-field" id="au_dessus_logement_autre_wrap">
+                        <input type="text" name="au_dessus_logement_autre" placeholder="Préciser si autre" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="check-group" style="margin-top:12px">
                 <label class="check-label">Pièce(s) :</label>
                 <div class="checks-row">
                   <label class="checkbox-item"><input type="checkbox" name="piece" value="sdb"/> SDB</label>
@@ -343,53 +426,7 @@
           </div>
 
           <div class="form-card">
-            <div class="form-card-header">3️⃣ Environnement</div>
-            <div class="form-card-body">
-              <div class="check-group">
-                <label class="check-label">Au-dessus :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="sdb_wc"/> SDB/WC</label>
-                  <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="cuisine"/> Cuisine</label>
-                  <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="terrasse"/> Terrasse</label>
-                  <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="toiture"/> Toiture</label>
-                  <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="logement"/> Logement</label>
-                  <label class="checkbox-item"><input type="checkbox" name="au_dessus" value="autre" class="triggers-preciser" data-target="au_dessus_autre_wrap"/> Autre</label>
-                </div>
-                <div class="preciser-field" id="au_dessus_autre_wrap">
-                  <input type="text" name="au_dessus_autre" placeholder="Préciser si autre" />
-                </div>
-              </div>
-              <div class="check-group">
-                <label class="check-label">En dessous :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="logement"/> Logement</label>
-                  <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="vide_sanitaire"/> Vide sanitaire</label>
-                  <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="local_technique_dessous"/> Local technique</label>
-                  <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="sol"/> Sol</label>
-                  <label class="checkbox-item"><input type="checkbox" name="en_dessous" value="autre" class="triggers-preciser" data-target="en_dessous_autre_wrap"/> Autre</label>
-                </div>
-                <div class="preciser-field" id="en_dessous_autre_wrap">
-                  <input type="text" name="en_dessous_autre" placeholder="Préciser si autre" />
-                </div>
-              </div>
-              <div class="check-group">
-                <label class="check-label">Derrière le mur :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="sdb"/> SDB</label>
-                  <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="cuisine"/> Cuisine</label>
-                  <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="colonne"/> Colonne</label>
-                  <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="exterieur"/> Extérieur</label>
-                  <label class="checkbox-item"><input type="checkbox" name="derriere_mur" value="autre" class="triggers-preciser" data-target="derriere_mur_autre_wrap"/> Autre</label>
-                </div>
-                <div class="preciser-field" id="derriere_mur_autre_wrap">
-                  <input type="text" name="derriere_mur_autre" placeholder="Préciser si autre" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-card">
-            <div class="form-card-header">4️⃣ Humidité / Indices</div>
+            <div class="form-card-header">3️⃣ Humidité / Indices</div>
             <div class="form-card-body">
               <div class="check-group">
                 <label class="check-label">Zone plus humide :</label>
@@ -424,64 +461,104 @@
           </div>
 
           <div class="form-card">
-            <div class="form-card-header">5️⃣ Installations / Travaux</div>
+            <div class="form-card-header">4️⃣ Installations / Travaux</div>
             <div class="form-card-body">
               <div class="check-group">
                 <label class="check-label">Chauffe-eau / ballon :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="chauffe_eau" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="chauffe_eau" value="oui" id="chauffe_eau_oui"/> Oui</label>
                   <label class="checkbox-item"><input type="checkbox" name="chauffe_eau" value="non"/> Non</label>
                 </div>
               </div>
-              <div class="check-group">
-                <label class="check-label">Type :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="chauffe_eau_type" value="elec"/> Élec</label>
-                  <label class="checkbox-item"><input type="checkbox" name="chauffe_eau_type" value="gaz"/> Gaz</label>
-                  <label class="checkbox-item"><input type="checkbox" name="chauffe_eau_type" value="solaire"/> Solaire</label>
-                  <label class="checkbox-item"><input type="checkbox" name="chauffe_eau_type" value="autre" class="triggers-preciser" data-target="chauffe_eau_type_autre_wrap"/> Autre</label>
-                </div>
-                <div class="preciser-field" id="chauffe_eau_type_autre_wrap">
-                  <input type="text" name="chauffe_eau_type_autre" placeholder="Préciser si autre" />
+              <!-- CASCADE : Chauffe-eau oui → type -->
+              <div class="cascade-block" id="cascade_chauffe_eau_type">
+                <div class="check-group" style="margin-bottom:0">
+                  <label class="check-label">Type de chauffe-eau :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="chauffe_eau_type" value="elec"/> Élec</label>
+                    <label class="checkbox-item"><input type="checkbox" name="chauffe_eau_type" value="gaz"/> Gaz</label>
+                    <label class="checkbox-item"><input type="checkbox" name="chauffe_eau_type" value="solaire"/> Solaire</label>
+                    <label class="checkbox-item"><input type="checkbox" name="chauffe_eau_type" value="autre" class="triggers-preciser" data-target="chauffe_eau_type_autre_wrap"/> Autre</label>
+                  </div>
+                  <div class="preciser-field" id="chauffe_eau_type_autre_wrap">
+                    <input type="text" name="chauffe_eau_type_autre" placeholder="Préciser si autre" />
+                  </div>
                 </div>
               </div>
-              <div class="check-group">
+
+              <div class="check-group" style="margin-top:12px">
                 <label class="check-label">Travaux récents :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="travaux" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="travaux" value="oui" id="travaux_oui"/> Oui</label>
                   <label class="checkbox-item"><input type="checkbox" name="travaux" value="non"/> Non</label>
                 </div>
               </div>
-              <div class="check-group">
-                <label class="check-label">Nature :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="plomberie"/> Plomberie</label>
-                  <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="carrelage"/> Carrelage</label>
-                  <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="etancheite"/> Étanchéité</label>
-                  <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="cloison"/> Cloison</label>
-                  <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="autre" class="triggers-preciser" data-target="travaux_nature_autre_wrap"/> Autre</label>
-                </div>
-                <div class="preciser-field" id="travaux_nature_autre_wrap">
-                  <input type="text" name="travaux_nature_autre" placeholder="Préciser si autre" />
+              <!-- CASCADE : Travaux oui → Nature -->
+              <div class="cascade-block" id="cascade_travaux_nature">
+                <div class="check-group" style="margin-bottom:0">
+                  <label class="check-label">Nature des travaux :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="plomberie"/> Plomberie</label>
+                    <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="carrelage"/> Carrelage</label>
+                    <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="etancheite"/> Étanchéité</label>
+                    <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="cloison"/> Cloison</label>
+                    <label class="checkbox-item"><input type="checkbox" name="travaux_nature" value="autre" class="triggers-preciser" data-target="travaux_nature_autre_wrap"/> Autre</label>
+                  </div>
+                  <div class="preciser-field" id="travaux_nature_autre_wrap">
+                    <input type="text" name="travaux_nature_autre" placeholder="Préciser si autre" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- NOUVEAU : Multi-sinistrés -->
+          <!-- SINISTRANT + SINISTRÉS -->
           <div class="form-card">
-            <div class="form-card-header">6️⃣ Sinistrés concernés</div>
+            <div class="form-card-header">5️⃣ Sinistrés concernés</div>
             <div class="form-card-body">
-              <p style="font-size:9pt;color:#555e7a;margin-bottom:12px;">Renseignez chaque sinistré (nom, étage, sinistre constaté, pièces touchées). Ajoutez autant de sinistrés que nécessaire.</p>
-              <div class="sinistre-list" id="sinistreList">
-                <!-- Items injectés dynamiquement -->
+
+              <!-- SINISTRANT -->
+              <div style="margin-bottom:16px;">
+                <div style="font-size:8.5pt;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#2a3963;background:#eef0f6;padding:7px 10px;border-radius:5px;margin-bottom:10px;">👤 Sinistrant (à l'origine du sinistre)</div>
+                <div class="field-row">
+                  <div class="field-group">
+                    <label>Nom / prénom</label>
+                    <input type="text" name="sinistrant_nom" placeholder="Ex : Mme Martin" />
+                  </div>
+                  <div class="field-group">
+                    <label>Étage / appartement</label>
+                    <input type="text" name="sinistrant_etage" placeholder="Ex : 3ème, Apt 8" />
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label>Sinistre constaté</label>
+                  <input type="text" name="sinistrant_sinistre" placeholder="Ex : Fuite sous évier, joint détérioré…" />
+                </div>
+                <div class="field-group">
+                  <label>Pièces concernées</label>
+                  <input type="text" name="sinistrant_pieces" placeholder="Ex : Cuisine, salle de bain…" />
+                </div>
+                <div class="field-row">
+                  <div class="field-group">
+                    <label>Téléphone</label>
+                    <input type="tel" name="sinistrant_tel" placeholder="Numéro de contact" />
+                  </div>
+                  <div class="field-group">
+                    <label>Email</label>
+                    <input type="email" name="sinistrant_email" placeholder="email@exemple.com" />
+                  </div>
+                </div>
               </div>
-              <button type="button" class="add-sinistre-btn" id="addSinistreBtn">+ Ajouter un sinistré</button>
+
+              <div style="border-top:1px solid #dde3f0;padding-top:14px;">
+                <div class="sinistre-list" id="sinistreList"></div>
+                <button type="button" class="add-sinistre-btn" id="addSinistreBtn">+ Ajouter un sinistré</button>
+              </div>
             </div>
           </div>
 
           <div class="form-card">
-            <div class="form-card-header">7️⃣ Personnes &amp; Accès</div>
+            <div class="form-card-header">6️⃣ Personnes &amp; Accès</div>
             <div class="form-card-body">
               <div class="field-row">
                 <div class="field-group">
@@ -530,7 +607,6 @@
             </div>
           </div>
 
-          <!-- Commentaires opératrice -->
           <div class="commentaires-card form-card">
             <div class="form-card-header">💬 Commentaires opératrice</div>
             <div class="form-card-body" style="padding:0">
@@ -561,10 +637,11 @@
                 <label>Perte d'eau estimée (cm/24h)</label>
                 <input type="text" name="perte_eau" placeholder="cm/24h" />
               </div>
+              <!-- CASCADE Piscine : filtration en marche → niveau skimmer -->
               <div class="check-group">
                 <label class="check-label">La fuite se produit :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="filtration_etat" value="filtration_marche"/> Filtration en marche</label>
+                  <label class="checkbox-item"><input type="checkbox" name="filtration_etat" value="filtration_marche" id="filtr_marche"/> Filtration en marche</label>
                   <label class="checkbox-item"><input type="checkbox" name="filtration_etat" value="filtration_arretee"/> Filtration arrêtée</label>
                   <label class="checkbox-item"><input type="checkbox" name="filtration_etat" value="continu"/> En continu</label>
                   <label class="checkbox-item"><input type="checkbox" name="filtration_etat" value="autre" class="triggers-preciser" data-target="filtration_etat_autre_wrap"/> Autre</label>
@@ -651,33 +728,36 @@
               <div class="check-group">
                 <label class="check-label">Local technique présent :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="local_technique" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="local_technique" value="oui" id="local_tech_oui"/> Oui</label>
                   <label class="checkbox-item"><input type="checkbox" name="local_technique" value="non"/> Non</label>
                 </div>
               </div>
-              <div class="check-group">
-                <label class="check-label">Le local technique contient :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="filtre"/> Filtre</label>
-                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pompe"/> Pompe</label>
-                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pompe_balai"/> Pompe balai</label>
-                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pac"/> Pompe à chaleur</label>
-                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="electrolyseur"/> Électrolyseur</label>
-                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="regulation_ph"/> Régulation pH</label>
-                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="soupapes"/> Soupapes/vannes</label>
-                  <label class="checkbox-item"><input type="checkbox" name="local_contient" value="collecteurs"/> Collecteurs</label>
+              <!-- CASCADE Piscine : local technique oui → contenu -->
+              <div class="cascade-block" id="cascade_local_contenu">
+                <div class="check-group" style="margin-bottom:8px">
+                  <label class="check-label">Le local technique contient :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="local_contient" value="filtre"/> Filtre</label>
+                    <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pompe"/> Pompe</label>
+                    <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pompe_balai"/> Pompe balai</label>
+                    <label class="checkbox-item"><input type="checkbox" name="local_contient" value="pac"/> Pompe à chaleur</label>
+                    <label class="checkbox-item"><input type="checkbox" name="local_contient" value="electrolyseur"/> Électrolyseur</label>
+                    <label class="checkbox-item"><input type="checkbox" name="local_contient" value="regulation_ph"/> Régulation pH</label>
+                    <label class="checkbox-item"><input type="checkbox" name="local_contient" value="soupapes"/> Soupapes/vannes</label>
+                    <label class="checkbox-item"><input type="checkbox" name="local_contient" value="collecteurs"/> Collecteurs</label>
+                  </div>
                 </div>
-              </div>
-              <div class="field-group">
-                <label>Autre équipement</label>
-                <input type="text" name="local_autre_equip" placeholder="Préciser" />
-              </div>
-              <div class="check-group">
-                <label class="check-label">Traces d'humidité dans le local technique :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="p_humidite_local" value="oui"/> Oui</label>
-                  <label class="checkbox-item"><input type="checkbox" name="p_humidite_local" value="non"/> Non</label>
-                  <label class="checkbox-item"><input type="checkbox" name="p_humidite_local" value="intermittence"/> Par intermittence</label>
+                <div class="field-group">
+                  <label>Autre équipement</label>
+                  <input type="text" name="local_autre_equip" placeholder="Préciser" />
+                </div>
+                <div class="check-group" style="margin-bottom:0">
+                  <label class="check-label">Traces d'humidité dans le local :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="p_humidite_local" value="oui"/> Oui</label>
+                    <label class="checkbox-item"><input type="checkbox" name="p_humidite_local" value="non"/> Non</label>
+                    <label class="checkbox-item"><input type="checkbox" name="p_humidite_local" value="intermittence"/> Par intermittence</label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -808,15 +888,12 @@
               </div>
             </div>
           </div>
-
-          <!-- Commentaires opératrice -->
           <div class="commentaires-card form-card">
             <div class="form-card-header">💬 Commentaires opératrice</div>
             <div class="form-card-body" style="padding:0">
               <textarea name="p_commentaires" placeholder="Informations complémentaires données par le client…" style="width:100%;padding:12px;border:none;background:transparent;font-size:9.5pt;color:#1a1e2e;resize:vertical;min-height:90px;outline:none;"></textarea>
             </div>
           </div>
-
         </div><!-- /panel-piscine -->
 
         <!-- ======== TOITURE ======== -->
@@ -885,12 +962,13 @@
                 <label>Étage</label>
                 <input type="text" name="t_etage" placeholder="Ex : dernier étage, RDC…" />
               </div>
+              <!-- CASCADE Toiture : type → modules A ou B -->
               <div class="check-group">
                 <label class="check-label">Type de toiture :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="plate"/> Toit plat</label>
-                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="pente"/> Toit en pente</label>
-                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="terrasse"/> Terrasse</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="plate" id="t_toit_plate"/> Toit plat</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="pente" id="t_toit_pente"/> Toit en pente</label>
+                  <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="terrasse" id="t_toit_terrasse"/> Terrasse</label>
                   <label class="checkbox-item"><input type="checkbox" name="t_type_toiture" value="autre" class="triggers-preciser" data-target="t_type_toiture_autre_wrap"/> Autre</label>
                 </div>
                 <div class="preciser-field" id="t_type_toiture_autre_wrap">
@@ -904,8 +982,9 @@
             </div>
           </div>
 
-          <div class="form-card">
-            <div class="form-card-header">🧱 Module A — Toit plat <span style="font-weight:400;font-size:8.5pt;opacity:.7">(à compléter si toit plat)</span></div>
+          <!-- MODULE A : visible seulement si toit plat ou terrasse cochés -->
+          <div class="form-card" id="moduleA_card" style="display:none;">
+            <div class="form-card-header">🧱 Module A — Toit plat / Terrasse</div>
             <div class="form-card-body">
               <div class="module-label">A1 · Surface &amp; Composition</div>
               <div class="field-group">
@@ -952,7 +1031,7 @@
                   <label class="checkbox-item"><input type="checkbox" name="t_a_age" value="inconnu"/> Inconnu</label>
                 </div>
               </div>
-              <div class="module-label" style="margin-top:14px">A2 · Équipements de sécurité &amp; Accès — Toit plat</div>
+              <div class="module-label" style="margin-top:14px">A2 · Équipements de sécurité &amp; Accès</div>
               <div class="check-group">
                 <label class="check-label">Présence de garde-corps périphériques :</label>
                 <div class="checks-row">
@@ -1001,8 +1080,9 @@
             </div>
           </div>
 
-          <div class="form-card">
-            <div class="form-card-header">🏠 Module B — Toit en pente <span style="font-weight:400;font-size:8.5pt;opacity:.7">(à compléter si toit en pente)</span></div>
+          <!-- MODULE B : visible seulement si toit en pente coché -->
+          <div class="form-card" id="moduleB_card" style="display:none;">
+            <div class="form-card-header">🏠 Module B — Toit en pente</div>
             <div class="form-card-body">
               <div class="module-label">B1 · Surface &amp; Composition</div>
               <div class="field-group">
@@ -1052,7 +1132,7 @@
                   <label class="checkbox-item"><input type="checkbox" name="t_b_age" value="inconnu"/> Inconnu</label>
                 </div>
               </div>
-              <div class="module-label" style="margin-top:14px">B2 · Équipements de sécurité &amp; Accès — Toit en pente</div>
+              <div class="module-label" style="margin-top:14px">B2 · Équipements de sécurité &amp; Accès</div>
               <div class="check-group">
                 <label class="check-label">Présence de dispositifs antichute :</label>
                 <div class="checks-row">
@@ -1088,20 +1168,17 @@
             </div>
           </div>
 
-          <!-- Commentaires opératrice -->
           <div class="commentaires-card form-card">
             <div class="form-card-header">💬 Commentaires opératrice</div>
             <div class="form-card-body" style="padding:0">
               <textarea name="t_commentaires" placeholder="Informations complémentaires données par le client…" style="width:100%;padding:12px;border:none;background:transparent;font-size:9.5pt;color:#1a1e2e;resize:vertical;min-height:90px;outline:none;"></textarea>
             </div>
           </div>
-
         </div><!-- /panel-toiture -->
 
         <!-- ======== EXTÉRIEUR ======== -->
         <div class="panel" id="panel-exterieur">
 
-          <!-- NOUVEAU : Maison ou appartement -->
           <div class="form-card">
             <div class="form-card-header">🏠 Type de logement</div>
             <div class="form-card-body">
@@ -1112,13 +1189,9 @@
                   <label class="checkbox-item"><input type="radio" name="ext_logement" value="maison" id="ext_log_maison"/> Maison</label>
                 </div>
               </div>
-
-              <!-- Si appartement : redirection vers questionnaire intérieur -->
               <div class="alert-redirect" id="ext_appart_redirect">
                 ⚠️ En cas de surconsommation d'eau en appartement, merci de <strong>remplir le questionnaire « Intérieur »</strong> à la place.
               </div>
-
-              <!-- Si maison -->
               <div class="cond-block" id="ext_maison_block">
                 <div class="check-group">
                   <label class="check-label">Type de maison :</label>
@@ -1127,6 +1200,12 @@
                     <label class="checkbox-item"><input type="radio" name="ext_maison_type" value="mitoyenne"/> Maison mitoyenne</label>
                   </div>
                 </div>
+              </div>
+
+              <!-- DÉGÂTS constatés pour Extérieur (après type de logement comme demandé) -->
+              <div class="field-group" style="margin-top:14px;border-top:1px solid #dde3f0;padding-top:12px;">
+                <label>Dégâts constatés</label>
+                <textarea name="degats_constates_ext" rows="3" placeholder="Décrivez brièvement les dégâts observés par le client…"></textarea>
               </div>
             </div>
           </div>
@@ -1153,31 +1232,36 @@
                   <label class="checkbox-item"><input type="checkbox" name="surconso" value="non"/> Non</label>
                 </div>
               </div>
+              <!-- CASCADE Extérieur : compteur tourne → vanne testée → fuite visible -->
               <div class="check-group">
-                <label class="check-label">Compteur tourne (fermé) :</label>
+                <label class="check-label">Compteur tourne (robinet fermé) :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="compteur_tourne" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="compteur_tourne" value="oui" id="compteur_tourne_oui"/> Oui</label>
                   <label class="checkbox-item"><input type="checkbox" name="compteur_tourne" value="non"/> Non</label>
                   <label class="checkbox-item"><input type="checkbox" name="compteur_tourne" value="non_teste"/> Non testé</label>
                 </div>
               </div>
-              <div class="check-group">
-                <label class="check-label">Vanne générale testée :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="vanne_testee" value="oui"/> Oui</label>
-                  <label class="checkbox-item"><input type="checkbox" name="vanne_testee" value="non"/> Non</label>
+              <div class="cascade-block" id="cascade_vanne_testee">
+                <div class="check-group" style="margin-bottom:0">
+                  <label class="check-label">Vanne générale testée :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="vanne_testee" value="oui" id="vanne_testee_oui"/> Oui</label>
+                    <label class="checkbox-item"><input type="checkbox" name="vanne_testee" value="non"/> Non</label>
+                  </div>
                 </div>
-              </div>
-              <div class="check-group">
-                <label class="check-label">Fuite visible :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="fuite_visible" value="oui"/> Oui</label>
-                  <label class="checkbox-item"><input type="checkbox" name="fuite_visible" value="non"/> Non</label>
+                <div class="cascade-block" id="cascade_fuite_visible" style="margin-top:10px;">
+                  <div class="check-group">
+                    <label class="check-label">Fuite visible :</label>
+                    <div class="checks-row">
+                      <label class="checkbox-item"><input type="checkbox" name="fuite_visible" value="oui"/> Oui</label>
+                      <label class="checkbox-item"><input type="checkbox" name="fuite_visible" value="non"/> Non</label>
+                    </div>
+                  </div>
+                  <div class="field-group" style="margin-bottom:0">
+                    <label>Localisation fuite visible</label>
+                    <input type="text" name="fuite_visible_loc" />
+                  </div>
                 </div>
-              </div>
-              <div class="field-group">
-                <label>Localisation fuite visible</label>
-                <input type="text" name="fuite_visible_loc" />
               </div>
             </div>
           </div>
@@ -1262,13 +1346,16 @@
               <div class="check-group">
                 <label class="check-label">Profondeur canalisation connue :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="profondeur_connue" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="profondeur_connue" value="oui" id="profondeur_connue_oui"/> Oui</label>
                   <label class="checkbox-item"><input type="checkbox" name="profondeur_connue" value="non"/> Non</label>
                 </div>
               </div>
-              <div class="field-group">
-                <label>Profondeur estimée (cm)</label>
-                <input type="number" name="profondeur_cm" placeholder="cm" />
+              <!-- CASCADE : profondeur connue → valeur -->
+              <div class="cascade-block" id="cascade_profondeur_cm">
+                <div class="field-group" style="margin-bottom:0">
+                  <label>Profondeur estimée (cm)</label>
+                  <input type="number" name="profondeur_cm" placeholder="cm" />
+                </div>
               </div>
             </div>
           </div>
@@ -1278,32 +1365,35 @@
               <div class="check-group">
                 <label class="check-label">Arrosage :</label>
                 <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="arrosage" value="oui"/> Oui</label>
+                  <label class="checkbox-item"><input type="checkbox" name="arrosage" value="oui" id="arrosage_oui"/> Oui</label>
                   <label class="checkbox-item"><input type="checkbox" name="arrosage" value="non"/> Non</label>
                 </div>
               </div>
-              <div class="check-group">
-                <label class="check-label">Type :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="type_arrosage" value="automatique"/> Automatique</label>
-                  <label class="checkbox-item"><input type="checkbox" name="type_arrosage" value="goutte_a_goutte"/> Goutte-à-goutte</label>
-                  <label class="checkbox-item"><input type="checkbox" name="type_arrosage" value="manuel"/> Manuel</label>
-                  <label class="checkbox-item"><input type="checkbox" name="type_arrosage" value="autre" class="triggers-preciser" data-target="type_arrosage_autre_wrap"/> Autre</label>
+              <!-- CASCADE : arrosage oui → type + vannes -->
+              <div class="cascade-block" id="cascade_arrosage_detail">
+                <div class="check-group">
+                  <label class="check-label">Type d'arrosage :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="type_arrosage" value="automatique"/> Automatique</label>
+                    <label class="checkbox-item"><input type="checkbox" name="type_arrosage" value="goutte_a_goutte"/> Goutte-à-goutte</label>
+                    <label class="checkbox-item"><input type="checkbox" name="type_arrosage" value="manuel"/> Manuel</label>
+                    <label class="checkbox-item"><input type="checkbox" name="type_arrosage" value="autre" class="triggers-preciser" data-target="type_arrosage_autre_wrap"/> Autre</label>
+                  </div>
+                  <div class="preciser-field" id="type_arrosage_autre_wrap">
+                    <input type="text" name="type_arrosage_autre" placeholder="Préciser si autre" />
+                  </div>
                 </div>
-                <div class="preciser-field" id="type_arrosage_autre_wrap">
-                  <input type="text" name="type_arrosage_autre" placeholder="Préciser si autre" />
+                <div class="check-group">
+                  <label class="check-label">Vannes secondaires :</label>
+                  <div class="checks-row">
+                    <label class="checkbox-item"><input type="checkbox" name="vannes_sec" value="oui"/> Oui</label>
+                    <label class="checkbox-item"><input type="checkbox" name="vannes_sec" value="non"/> Non</label>
+                  </div>
                 </div>
-              </div>
-              <div class="check-group">
-                <label class="check-label">Vannes secondaires :</label>
-                <div class="checks-row">
-                  <label class="checkbox-item"><input type="checkbox" name="vannes_sec" value="oui"/> Oui</label>
-                  <label class="checkbox-item"><input type="checkbox" name="vannes_sec" value="non"/> Non</label>
+                <div class="field-group" style="margin-bottom:0">
+                  <label>Localisation des vannes</label>
+                  <input type="text" name="vannes_loc" />
                 </div>
-              </div>
-              <div class="field-group">
-                <label>Localisation des vannes</label>
-                <input type="text" name="vannes_loc" />
               </div>
             </div>
           </div>
@@ -1369,15 +1459,12 @@
               </div>
             </div>
           </div>
-
-          <!-- Commentaires opératrice -->
           <div class="commentaires-card form-card">
             <div class="form-card-header">💬 Commentaires opératrice</div>
             <div class="form-card-body" style="padding:0">
               <textarea name="e_commentaires" placeholder="Informations complémentaires données par le client…" style="width:100%;padding:12px;border:none;background:transparent;font-size:9.5pt;color:#1a1e2e;resize:vertical;min-height:90px;outline:none;"></textarea>
             </div>
           </div>
-
         </div><!-- /panel-exterieur -->
 
         <div class="form-actions">
@@ -1421,10 +1508,8 @@
 
 </main>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Modal suppression -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h3>Supprimer le questionnaire ?</h3>
@@ -1436,7 +1521,6 @@
   </div>
 </div>
 
-<!-- SDK Supabase UMD -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 'use strict';
@@ -1446,7 +1530,6 @@ const SUPABASE_URL  = 'https://hrolvvpkpshefljlfljb.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhyb2x2dnBrcHNoZWZsamxmbGpiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzAwMTgsImV4cCI6MjA4OTM0NjAxOH0.h2n0u7mdiHRLqp8PpshS__9OXprkqnbYq6vuCAR_TFg';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-// ==================== DB ====================
 async function dbAdd(formData) {
   const { refRapport, type, createdAt, ...rest } = formData;
   const { data, error } = await sb.from('rapports').insert({
@@ -1474,6 +1557,24 @@ function flattenRow(row) {
   return { id: row.id, refRapport: row.ref_rapport, type: row.type, createdAt: row.created_at, ...(row.data || {}) };
 }
 
+// ==================== HELPER CASCADE ====================
+function bindCascade(triggerId, isCheckbox, targetId, uncheckedAlsoClear) {
+  const trigger = document.getElementById(triggerId);
+  if (!trigger) return;
+  trigger.addEventListener('change', function() {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    const show = isCheckbox ? this.checked : (this.value !== '');
+    target.classList.toggle('visible', show);
+    if (!show && uncheckedAlsoClear) {
+      target.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(i => i.checked = false);
+      target.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(i => i.value = '');
+      target.querySelectorAll('.cascade-block').forEach(b => b.classList.remove('visible'));
+      target.querySelectorAll('.preciser-field').forEach(b => b.classList.remove('visible'));
+    }
+  });
+}
+
 // ==================== PRÉCISER SI AUTRE ====================
 document.addEventListener('change', function(e) {
   if (e.target.classList.contains('triggers-preciser')) {
@@ -1485,6 +1586,67 @@ document.addEventListener('change', function(e) {
     if (!anyChecked) { const inp = wrap.querySelector('input'); if (inp) inp.value = ''; }
   }
 });
+
+// ==================== CASCADES INTÉRIEUR ====================
+// Eau coule oui → alimentation coupée
+bindCascade('eau_coule_oui', true, 'cascade_alim_coupee', true);
+// Alimentation coupée oui → fuite s'arrête
+bindCascade('alim_coupee_oui', true, 'cascade_fuite_arrete', true);
+
+// Zone : mur → derrière mur
+document.getElementById('zone_mur').addEventListener('change', function() {
+  document.getElementById('cascade_derriere_mur').classList.toggle('visible', this.checked);
+});
+// Zone : sol → en dessous
+document.getElementById('zone_sol').addEventListener('change', function() {
+  document.getElementById('cascade_en_dessous').classList.toggle('visible', this.checked);
+});
+// Zone : plafond → au dessus
+document.getElementById('zone_plafond').addEventListener('change', function() {
+  document.getElementById('cascade_au_dessus').classList.toggle('visible', this.checked);
+});
+// Au-dessus logement → pièce logement
+document.getElementById('au_dessus_logement').addEventListener('change', function() {
+  document.getElementById('cascade_au_dessus_logement').classList.toggle('visible', this.checked);
+  if (!this.checked) {
+    document.querySelectorAll('[name="au_dessus_logement_piece"]').forEach(i => i.checked = false);
+  }
+});
+
+// Chauffe-eau oui → type
+bindCascade('chauffe_eau_oui', true, 'cascade_chauffe_eau_type', true);
+// Travaux oui → nature
+bindCascade('travaux_oui', true, 'cascade_travaux_nature', true);
+
+// ==================== CASCADES PISCINE ====================
+// Local technique oui → contenu
+bindCascade('local_tech_oui', true, 'cascade_local_contenu', true);
+
+// ==================== CASCADES TOITURE ====================
+// Type toiture → modules A/B
+function updateToitureModules() {
+  const plate = document.getElementById('t_toit_plate');
+  const pente = document.getElementById('t_toit_pente');
+  const terrasse = document.getElementById('t_toit_terrasse');
+  const showA = (plate && plate.checked) || (terrasse && terrasse.checked);
+  const showB = pente && pente.checked;
+  document.getElementById('moduleA_card').style.display = showA ? 'block' : 'none';
+  document.getElementById('moduleB_card').style.display = showB ? 'block' : 'none';
+}
+['t_toit_plate','t_toit_pente','t_toit_terrasse'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', updateToitureModules);
+});
+
+// ==================== CASCADES EXTÉRIEUR ====================
+// Compteur tourne oui → vanne testée
+bindCascade('compteur_tourne_oui', true, 'cascade_vanne_testee', true);
+// Vanne testée oui → fuite visible
+bindCascade('vanne_testee_oui', true, 'cascade_fuite_visible', true);
+// Profondeur connue oui → valeur cm
+bindCascade('profondeur_connue_oui', true, 'cascade_profondeur_cm', true);
+// Arrosage oui → détails arrosage
+bindCascade('arrosage_oui', true, 'cascade_arrosage_detail', true);
 
 // ==================== LOGEMENT CONDITIONNEL (INTÉRIEUR) ====================
 document.querySelectorAll('input[name="int_logement"]').forEach(radio => {
@@ -1504,6 +1666,13 @@ document.querySelectorAll('input[name="ext_logement"]').forEach(radio => {
   });
 });
 
+// ==================== DÉGÂTS : masquer dans Extérieur ====================
+function updateDegatsVisibility() {
+  // Le champ dégâts global est dans les infos générales → le cacher pour Extérieur
+  const wrap = document.getElementById('degatsGlobalWrap');
+  if (wrap) wrap.style.display = (currentType === 'exterieur') ? 'none' : 'block';
+}
+
 // ==================== MULTI-SINISTRÉS ====================
 let sinistreCount = 0;
 
@@ -1520,25 +1689,31 @@ function createSinistreItem() {
     </div>
     <div class="field-row">
       <div class="field-group">
-        <label>Nom / prénom</label>
-        <input type="text" name="sinistre_${idx}_nom" placeholder="Ex : M. Dupont" />
+        <label style="font-size:8pt;font-weight:700;color:#555e7a;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px">Nom / prénom</label>
+        <input type="text" name="sinistre_${idx}_nom" placeholder="Ex : M. Dupont" style="width:100%;padding:7px 10px;border:1px solid #d0d7e8;border-radius:5px;font-size:9pt;background:#fff"/>
       </div>
       <div class="field-group">
-        <label>Étage / appartement</label>
-        <input type="text" name="sinistre_${idx}_etage" placeholder="Ex : 3ème, Apt 12" />
+        <label style="font-size:8pt;font-weight:700;color:#555e7a;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px">Étage / appartement</label>
+        <input type="text" name="sinistre_${idx}_etage" placeholder="Ex : 3ème, Apt 12" style="width:100%;padding:7px 10px;border:1px solid #d0d7e8;border-radius:5px;font-size:9pt;background:#fff"/>
       </div>
     </div>
-    <div class="field-group">
-      <label>Sinistre constaté</label>
-      <input type="text" name="sinistre_${idx}_sinistre" placeholder="Ex : Tache au plafond, dégât des eaux…" />
+    <div class="field-group" style="margin-top:8px">
+      <label style="font-size:8pt;font-weight:700;color:#555e7a;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px">Sinistre constaté</label>
+      <input type="text" name="sinistre_${idx}_sinistre" placeholder="Ex : Tache au plafond, dégât des eaux…" style="width:100%;padding:7px 10px;border:1px solid #d0d7e8;border-radius:5px;font-size:9pt;background:#fff"/>
     </div>
-    <div class="field-group">
-      <label>Pièces touchées</label>
-      <input type="text" name="sinistre_${idx}_pieces" placeholder="Ex : Salon, chambre, couloir…" />
+    <div class="field-group" style="margin-top:8px">
+      <label style="font-size:8pt;font-weight:700;color:#555e7a;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px">Pièces touchées</label>
+      <input type="text" name="sinistre_${idx}_pieces" placeholder="Ex : Salon, chambre, couloir…" style="width:100%;padding:7px 10px;border:1px solid #d0d7e8;border-radius:5px;font-size:9pt;background:#fff"/>
     </div>
-    <div class="field-group">
-      <label>Téléphone</label>
-      <input type="tel" name="sinistre_${idx}_tel" placeholder="Numéro de contact" />
+    <div class="field-row" style="margin-top:8px">
+      <div class="field-group">
+        <label style="font-size:8pt;font-weight:700;color:#555e7a;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px">Téléphone</label>
+        <input type="tel" name="sinistre_${idx}_tel" placeholder="Numéro de contact" style="width:100%;padding:7px 10px;border:1px solid #d0d7e8;border-radius:5px;font-size:9pt;background:#fff"/>
+      </div>
+      <div class="field-group">
+        <label style="font-size:8pt;font-weight:700;color:#555e7a;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:4px">Email</label>
+        <input type="email" name="sinistre_${idx}_email" placeholder="email@exemple.com" style="width:100%;padding:7px 10px;border:1px solid #d0d7e8;border-radius:5px;font-size:9pt;background:#fff"/>
+      </div>
     </div>
   `;
   return div;
@@ -1548,7 +1723,6 @@ function removeSinistre(btn) {
   btn.closest('.sinistre-item').remove();
 }
 
-// Ajouter un premier sinistré par défaut
 document.getElementById('sinistreList').appendChild(createSinistreItem());
 
 document.getElementById('addSinistreBtn').addEventListener('click', function() {
@@ -1591,6 +1765,7 @@ document.querySelectorAll('.type-btn').forEach(btn => {
     currentType = btn.dataset.type;
     document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('.panel').forEach(p  => p.classList.toggle('active', p.id === 'panel-' + currentType));
+    updateDegatsVisibility();
   });
 });
 
@@ -1602,11 +1777,12 @@ function collectSinistrés() {
   items.forEach(item => {
     const idx = item.dataset.idx;
     result.push({
-      nom: (item.querySelector('[name="sinistre_' + idx + '_nom"]') || {}).value || '',
-      etage: (item.querySelector('[name="sinistre_' + idx + '_etage"]') || {}).value || '',
-      sinistre: (item.querySelector('[name="sinistre_' + idx + '_sinistre"]') || {}).value || '',
-      pieces: (item.querySelector('[name="sinistre_' + idx + '_pieces"]') || {}).value || '',
-      tel: (item.querySelector('[name="sinistre_' + idx + '_tel"]') || {}).value || ''
+      nom:      (item.querySelector('[name="sinistre_' + idx + '_nom"]')     || {}).value || '',
+      etage:    (item.querySelector('[name="sinistre_' + idx + '_etage"]')   || {}).value || '',
+      sinistre: (item.querySelector('[name="sinistre_' + idx + '_sinistre"]')|| {}).value || '',
+      pieces:   (item.querySelector('[name="sinistre_' + idx + '_pieces"]')  || {}).value || '',
+      tel:      (item.querySelector('[name="sinistre_' + idx + '_tel"]')     || {}).value || '',
+      email:    (item.querySelector('[name="sinistre_' + idx + '_email"]')   || {}).value || ''
     });
   });
   return result;
@@ -1617,13 +1793,11 @@ function collectForm() {
   const data = { type: currentType };
   data.refRapport = (document.getElementById('refRapport').value || '').trim();
 
-  // Radios
   ['int_logement','int_maison_type','ext_logement','ext_maison_type'].forEach(name => {
     const checked = form.querySelector('input[name="' + name + '"]:checked');
     if (checked) data[name] = checked.value;
   });
 
-  // Checkboxes
   const groups = {};
   form.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     if (!cb.name) return;
@@ -1632,14 +1806,21 @@ function collectForm() {
   });
   Object.assign(data, groups);
 
-  // Text/number/tel/textarea
-  form.querySelectorAll('input[type="text"], input[type="number"], input[type="tel"], textarea').forEach(el => {
+  form.querySelectorAll('input[type="text"], input[type="number"], input[type="tel"], input[type="email"], textarea').forEach(el => {
     if (el.name && !el.name.startsWith('sinistre_')) data[el.name] = el.value.trim();
   });
 
-  // Sinistrés (intérieur uniquement)
   if (currentType === 'interieur') {
     data.sinistrés = collectSinistrés();
+    // Sinistrant
+    data.sinistrant = {
+      nom:      (form.querySelector('[name="sinistrant_nom"]')     || {}).value || '',
+      etage:    (form.querySelector('[name="sinistrant_etage"]')   || {}).value || '',
+      sinistre: (form.querySelector('[name="sinistrant_sinistre"]')|| {}).value || '',
+      pieces:   (form.querySelector('[name="sinistrant_pieces"]')  || {}).value || '',
+      tel:      (form.querySelector('[name="sinistrant_tel"]')     || {}).value || '',
+      email:    (form.querySelector('[name="sinistrant_email"]')   || {}).value || ''
+    };
   }
 
   data.createdAt = new Date().toISOString();
@@ -1659,7 +1840,9 @@ function resetForm() {
     f.classList.remove('visible');
     const inp = f.querySelector('input'); if (inp) inp.value = '';
   });
-  document.querySelectorAll('.cond-block, .alert-redirect').forEach(b => b.classList.remove('visible'));
+  document.querySelectorAll('.cond-block, .alert-redirect, .cascade-block').forEach(b => b.classList.remove('visible'));
+  document.getElementById('moduleA_card').style.display = 'none';
+  document.getElementById('moduleB_card').style.display = 'none';
   resetSinistrés();
 }
 
@@ -1789,6 +1972,18 @@ function printReportHTML(r) {
     if (!base) return '';
     return autreVal && base.includes('autre') ? base + ' — ' + autreVal : base;
   }
+  function sinistrantSec(s) {
+    if (!s || (!s.nom && !s.sinistre)) return '';
+    let html = '<div class="sec"><div class="sec-title">Sinistrant (origine du sinistre)</div><table>';
+    if (s.nom)      html += `<tr><td class="lbl">Nom</td><td>${s.nom}</td></tr>`;
+    if (s.etage)    html += `<tr><td class="lbl">Étage / Apt</td><td>${s.etage}</td></tr>`;
+    if (s.sinistre) html += `<tr><td class="lbl">Sinistre</td><td>${s.sinistre}</td></tr>`;
+    if (s.pieces)   html += `<tr><td class="lbl">Pièces</td><td>${s.pieces}</td></tr>`;
+    if (s.tel)      html += `<tr><td class="lbl">Téléphone</td><td>${s.tel}</td></tr>`;
+    if (s.email)    html += `<tr><td class="lbl">Email</td><td>${s.email}</td></tr>`;
+    html += '</table></div>';
+    return html;
+  }
   function sinistresSec(list) {
     if (!list || !list.length) return '';
     let html = '<div class="sec"><div class="sec-title">Sinistrés concernés</div>';
@@ -1796,11 +1991,12 @@ function printReportHTML(r) {
       if (!s.nom && !s.sinistre) return;
       html += `<div style="margin:6px 0 2px;font-weight:700;font-size:8.5pt;color:#2a3963;padding:4px 8px;background:#eef0f6">Sinistré n° ${i+1}</div>`;
       html += '<table>';
-      if (s.nom) html += `<tr><td class="lbl">Nom</td><td>${s.nom}</td></tr>`;
-      if (s.etage) html += `<tr><td class="lbl">Étage / Apt</td><td>${s.etage}</td></tr>`;
+      if (s.nom)      html += `<tr><td class="lbl">Nom</td><td>${s.nom}</td></tr>`;
+      if (s.etage)    html += `<tr><td class="lbl">Étage / Apt</td><td>${s.etage}</td></tr>`;
       if (s.sinistre) html += `<tr><td class="lbl">Sinistre</td><td>${s.sinistre}</td></tr>`;
-      if (s.pieces) html += `<tr><td class="lbl">Pièces</td><td>${s.pieces}</td></tr>`;
-      if (s.tel) html += `<tr><td class="lbl">Téléphone</td><td>${s.tel}</td></tr>`;
+      if (s.pieces)   html += `<tr><td class="lbl">Pièces</td><td>${s.pieces}</td></tr>`;
+      if (s.tel)      html += `<tr><td class="lbl">Téléphone</td><td>${s.tel}</td></tr>`;
+      if (s.email)    html += `<tr><td class="lbl">Email</td><td>${s.email}</td></tr>`;
       html += '</table>';
     });
     html += '</div>';
@@ -1810,6 +2006,7 @@ function printReportHTML(r) {
   let corps = '';
 
   if (r.type === 'interieur') {
+    if (r.degats_constates) corps += sec('Dégâts constatés', [['', r.degats_constates]]);
     corps += sec('Type de logement', [
       ['Logement', r.int_logement],
       ['Syndic prévenu', val(r.int_syndic_prevenu)],
@@ -1825,28 +2022,28 @@ function printReportHTML(r) {
     ]);
     corps += sec('2. Localisation', [
       ['Zone', withAutre(r.zone_int, r.zone_int_autre)],
+      ['Derrière mur', withAutre(r.derriere_mur, r.derriere_mur_autre)],
+      ['En dessous', withAutre(r.en_dessous, r.en_dessous_autre)],
+      ['Au-dessus', withAutre(r.au_dessus, r.au_dessus_autre)],
+      ['Pièce logement au-dessus', withAutre(r.au_dessus_logement_piece, r.au_dessus_logement_autre)],
       ['Pièce(s)', withAutre(r.piece, r.piece_autre)],
       ['Niveau', withAutre(r.niveau, r.niveau_autre)]
     ]);
-    corps += sec('3. Environnement', [
-      ['Au-dessus', withAutre(r.au_dessus, r.au_dessus_autre)],
-      ['En dessous', withAutre(r.en_dessous, r.en_dessous_autre)],
-      ['Derrière mur', withAutre(r.derriere_mur, r.derriere_mur_autre)]
-    ]);
-    corps += sec('4. Humidité / Indices', [
+    corps += sec('3. Humidité / Indices', [
       ['Zone humide', r.zone_humide],
       ['Précision', r.zone_humide_precision],
       ['Odeur', r.odeur],
       ['Indices', r.indices]
     ]);
-    corps += sec('5. Installations / Travaux', [
+    corps += sec('4. Installations / Travaux', [
       ['Chauffe-eau', r.chauffe_eau],
       ['Type chauffe-eau', withAutre(r.chauffe_eau_type, r.chauffe_eau_type_autre)],
       ['Travaux', r.travaux],
       ['Nature travaux', withAutre(r.travaux_nature, r.travaux_nature_autre)]
     ]);
+    corps += sinistrantSec(r.sinistrant);
     corps += sinistresSec(r['sinistrés']);
-    corps += sec('7. Personnes & Accès', [
+    corps += sec('6. Personnes & Accès', [
       ['Personne', r.personne],['Téléphone', r.telephone],
       ['Interlocuteur', r.interlocuteur],['Coordonnées diff.', r.coordonnees_diff],
       ['Accès', r.acces],['Stationnement', r.stationnement],['Contraintes', r.contraintes]
@@ -1855,6 +2052,7 @@ function printReportHTML(r) {
   }
 
   if (r.type === 'piscine') {
+    if (r.degats_constates) corps += sec('Dégâts constatés', [['', r.degats_constates]]);
     corps += sec("1. Origine / Perte d'eau", [
       ['Ancienneté', withAutre(r.p_anciennete, r.p_anciennete_autre)],
       ["Perte d'eau (cm/24h)", r.perte_eau],
@@ -1897,6 +2095,7 @@ function printReportHTML(r) {
   }
 
   if (r.type === 'toiture') {
+    if (r.degats_constates) corps += sec('Dégâts constatés', [['', r.degats_constates]]);
     corps += sec('1. Origine', [
       ['Ancienneté', withAutre(r.t_anciennete, r.t_anciennete_autre)],
       ['Conditions', withAutre(r.t_condition, r.t_condition_autre)],
@@ -1910,44 +2109,30 @@ function printReportHTML(r) {
     corps += sec('Module A — Toit plat · Surface & Composition', [
       ['Surface (m²)', r.t_a_surface],
       ['Type étanchéité', withAutre(r.t_a_etancheite, r.t_a_etancheite_autre)],
-      ['Protection', r.t_a_protection],
-      ['Isolation', r.t_a_isolation],
-      ['Âge étanchéité', r.t_a_age]
+      ['Protection', r.t_a_protection],['Isolation', r.t_a_isolation],['Âge étanchéité', r.t_a_age]
     ]);
     corps += sec('Module A — Toit plat · Sécurité & Accès', [
-      ['Garde-corps', r.t_a_gardecorps],
-      ['Ligne de vie', r.t_a_ligne_vie],
-      ["Points d'ancrage", r.t_a_ancrage],
-      ["Type d'accès", r.t_a_type_acces],
-      ["Hauteur d'accès", r.t_a_hauteur_acces],
-      ['Échelle sur place', r.t_a_echelle],
-      ["Qui donne l'accès", r.t_a_qui_acces],
-      ['Stationnement', r.t_a_stationnement]
+      ['Garde-corps', r.t_a_gardecorps],['Ligne de vie', r.t_a_ligne_vie],
+      ["Points d'ancrage", r.t_a_ancrage],["Type d'accès", r.t_a_type_acces],
+      ["Hauteur d'accès", r.t_a_hauteur_acces],['Échelle sur place', r.t_a_echelle],
+      ["Qui donne l'accès", r.t_a_qui_acces],['Stationnement', r.t_a_stationnement]
     ]);
     corps += sec('Module B — Toit en pente · Surface & Composition', [
-      ['Surface (m²)', r.t_b_surface],
-      ['Pente (%)', r.t_b_pente],
+      ['Surface (m²)', r.t_b_surface],['Pente (%)', r.t_b_pente],
       ['Type couverture', withAutre(r.t_b_couverture, r.t_b_couverture_autre)],
-      ['État couverture', r.t_b_etat],
-      ['Sous-toiture', r.t_b_sous_toiture],
-      ['Âge couverture', r.t_b_age]
+      ['État couverture', r.t_b_etat],['Sous-toiture', r.t_b_sous_toiture],['Âge couverture', r.t_b_age]
     ]);
     corps += sec('Module B — Toit en pente · Sécurité & Accès', [
-      ['Antichute', r.t_b_antichute],
-      ["Type d'accès", r.t_b_type_acces],
-      ["Hauteur d'accès", r.t_b_hauteur_acces],
-      ['Échelle sur place', r.t_b_echelle],
-      ["Qui donne l'accès", r.t_b_qui_acces],
-      ['Stationnement', r.t_b_stationnement]
+      ['Antichute', r.t_b_antichute],["Type d'accès", r.t_b_type_acces],
+      ["Hauteur d'accès", r.t_b_hauteur_acces],['Échelle sur place', r.t_b_echelle],
+      ["Qui donne l'accès", r.t_b_qui_acces],['Stationnement', r.t_b_stationnement]
     ]);
     corps += sec('Commentaires opératrice', [['', r.t_commentaires]]);
   }
 
   if (r.type === 'exterieur') {
-    corps += sec('Type de logement', [
-      ['Logement', r.ext_logement],
-      ['Type maison', r.ext_maison_type]
-    ]);
+    corps += sec('Type de logement', [['Logement', r.ext_logement],['Type maison', r.ext_maison_type]]);
+    if (r.degats_constates_ext) corps += sec('Dégâts constatés', [['', r.degats_constates_ext]]);
     corps += sec('1. Origine', [
       ['Ancienneté', withAutre(r.e_anciennete, r.e_anciennete_autre)],
       ["Surconso.", r.surconso],['Compteur tourne', r.compteur_tourne],
@@ -2032,6 +2217,7 @@ function showToast(msg, type='') {
 
 // ==================== INIT ====================
 updateCount();
+updateDegatsVisibility();
 </script>
 </body>
 </html>
