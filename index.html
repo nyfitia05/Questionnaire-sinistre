@@ -203,7 +203,7 @@
           <div class="form-card-header">Informations générales</div>
           <div class="form-card-body">
             <div class="field-group">
-              <label>Numéro de dossier</label>
+              <label>Numéro d'intervention</label>
               <input type="text" id="refRapport" placeholder="Ex : 3256" />
             </div>
             <!-- NOUVEAU : Dégâts constatés (visible pour tous sauf Extérieur) -->
@@ -1849,7 +1849,7 @@ function resetForm() {
 // ==================== ENREGISTRER ====================
 document.getElementById('saveReportBtn').addEventListener('click', async () => {
   const data = collectForm();
-  if (!data.refRapport) { showToast("Renseignez le numéro de dossier avant d'enregistrer.", 'error'); return; }
+  if (!data.refRapport) { showToast("Renseignez le numéro d'intervention avant d'enregistrer.", 'error'); return; }
   const btn = document.getElementById('saveReportBtn');
   btn.disabled = true; btn.textContent = 'Enregistrement…';
   try {
