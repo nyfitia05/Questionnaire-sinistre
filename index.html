@@ -206,9 +206,21 @@
               <label>Numéro d'intervention</label>
               <input type="text" id="refRapport" placeholder="Ex : 3256" />
             </div>
-            <div class="field-group">
-              <label>Adresse du site</label>
-              <input type="text" name="adresse_site" placeholder="Ex : 12 rue des Fleurs, 75000 Paris" />
+            <div class="field-row">
+              <div class="field-group">
+                <label>Adresse du site</label>
+                <input type="text" name="adresse_site" placeholder="Ex : 12 rue des Fleurs" />
+              </div>
+              <div class="field-row" style="flex: 1; gap: 10px;">
+                <div class="field-group">
+                  <label>Code postal</label>
+                  <input type="text" name="code_postal" placeholder="Ex : 75000" />
+                </div>
+                <div class="field-group">
+                  <label>Ville</label>
+                  <input type="text" name="ville" placeholder="Ex : Paris" />
+                </div>
+              </div>
             </div>
             <!-- NOUVEAU : Dégâts constatés (visible pour tous sauf Extérieur) -->
             <div id="degatsGlobalWrap" class="field-group" style="margin-top:4px;">
